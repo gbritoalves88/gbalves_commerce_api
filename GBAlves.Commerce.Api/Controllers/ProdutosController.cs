@@ -17,12 +17,14 @@ public class ProdutosController : ControllerBase
     }
 
     /// <summary>
-    /// Listar todos os produtos
+    /// Listar todos os produtos (com busca opcional)
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult<List<ProdutoResponse>>> ObterTodos()
+    public async Task<ActionResult<List<ProdutoResponse>>> ObterTodos([FromQuery] string? busca = null)
     {
-        var produtos = await _produtoService.ObterTodos();
+        var produtos = string.IsNullOrWhiteSpace(busca)
+            ? await _produtoService.ObterTodos()
+            : await _produtoService.Buscar(busca);
         return Ok(produtos);
     }
 
@@ -44,6 +46,17 @@ public class ProdutosController : ControllerBase
     {
         var produtos = await _produtoService.ObterPorCategoria(slug);
         return Ok(produtos);
+    }
+
+    /// <summary>
+    /// Obter produto por slug
+    /// </summary>
+    [HttpGet("slug/{slug}")]
+    public async Task<ActionResult<ProdutoResponse>> ObterPorSlug(string slug)
+    {
+        var produto = await _produtoService.ObterPorSlug(slug);
+        if (produto is null) return NotFound();
+        return Ok(produto);
     }
 
     /// <summary>

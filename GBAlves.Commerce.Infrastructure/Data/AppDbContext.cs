@@ -40,7 +40,6 @@ public class AppDbContext : DbContext
             e.Property(x => x.GoogleAnalytics).HasColumnName("google_analytics").HasMaxLength(50);
             e.Property(x => x.CriadoEm).HasColumnName("criado_em");
             e.Property(x => x.AtualizadoEm).HasColumnName("atualizado_em");
-            
         });
 
         modelBuilder.Entity<Usuario>(e =>
@@ -53,8 +52,14 @@ public class AppDbContext : DbContext
             e.Property(x => x.SenhaHash).HasColumnName("senha_hash").HasMaxLength(500);
             e.Property(x => x.NivelAcesso).HasColumnName("nivel_acesso").HasMaxLength(20);
             e.Property(x => x.Ativo).HasColumnName("ativo");
+            e.Property(x => x.ClienteId).HasColumnName("cliente_id");
             e.Property(x => x.CriadoEm).HasColumnName("criado_em");
             e.Property(x => x.AtualizadoEm).HasColumnName("atualizado_em");
+
+            e.HasOne(x => x.Cliente)
+                .WithMany()
+                .HasForeignKey(x => x.ClienteId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<Cliente>(e =>
@@ -158,7 +163,7 @@ public class AppDbContext : DbContext
                 .HasForeignKey(x => x.ProdutoId)
                 .OnDelete(DeleteBehavior.SetNull);
         });
-    
+
         modelBuilder.Entity<Menu>(e =>
         {
             e.ToTable("menus");
@@ -181,6 +186,7 @@ public class AppDbContext : DbContext
             e.Property(x => x.ItemPaiId).HasColumnName("item_pai_id");
             e.Property(x => x.OrdemExibicao).HasColumnName("ordem_exibicao");
             e.Property(x => x.Ativo).HasColumnName("ativo");
+            e.Property(x => x.CategoriaId).HasColumnName("categoria_id");
 
             e.HasOne(x => x.Menu)
                 .WithMany(x => x.Itens)
@@ -191,6 +197,11 @@ public class AppDbContext : DbContext
                 .WithMany(x => x.SubItens)
                 .HasForeignKey(x => x.ItemPaiId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            e.HasOne(x => x.Categoria)
+                .WithMany()
+                .HasForeignKey(x => x.CategoriaId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<Banner>(e =>

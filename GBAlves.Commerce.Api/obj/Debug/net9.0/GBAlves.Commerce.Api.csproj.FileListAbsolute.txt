@@ -138,3 +138,4 @@ C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Api\bin\Debug\net9.0\Micros
 C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Api\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
 C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Api\bin\Debug\net9.0\CloudinaryDotNet.dll
 C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Api\bin\Debug\net9.0\Newtonsoft.Json.dll
+C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Api\obj\Debug\net9.0\GBAlves.Commerce.Api.sourcelink.json

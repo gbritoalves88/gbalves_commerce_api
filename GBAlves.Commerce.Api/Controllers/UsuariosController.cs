@@ -39,4 +39,13 @@ public class UsuariosController : ControllerBase
         if (!result) return NotFound();
         return NoContent();
     }
+
+    [HttpPut("{id:guid}")]
+    [Authorize]
+    public async Task<ActionResult<UsuarioResponse>> Atualizar(Guid id, [FromBody] AtualizarUsuarioRequest request)
+    {
+        var usuario = await _usuarioService.Atualizar(id, request);
+        if (usuario is null) return NotFound();
+        return Ok(usuario);
+    }
 }

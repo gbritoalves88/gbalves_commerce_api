@@ -9,4 +9,5 @@ public interface IUsuarioService
     Task<UsuarioResponse?> ObterPorId(Guid id);
     Task<UsuarioResponse> Criar(CriarUsuarioRequest request);
     Task<bool> Excluir(Guid id);
+    Task<UsuarioResponse?> Atualizar(Guid id, AtualizarUsuarioRequest request);
 }

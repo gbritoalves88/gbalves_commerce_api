@@ -79,11 +79,10 @@ public class BannerService : IBannerService
         var banner = await _context.Banners.FindAsync(id);
         if (banner is null) return false;
 
-        banner.Ativo = false;
+        _context.Banners.Remove(banner);  // Remove de verdade
         await _context.SaveChangesAsync();
         return true;
     }
-
     private static BannerResponse MapToResponse(Banner b)
     {
         return new BannerResponse(

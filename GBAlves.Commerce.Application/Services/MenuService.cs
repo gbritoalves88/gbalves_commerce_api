@@ -55,7 +55,7 @@ public class MenuService : IMenuService
 
     public async Task<ItemMenuResponse> AdicionarItem(Guid menuId, CriarItemMenuRequest request)
     {
-        var item = new ItemMenu
+       var item = new ItemMenu
         {
             Id = Guid.NewGuid(),
             MenuId = menuId,
@@ -64,9 +64,9 @@ public class MenuService : IMenuService
             Url = request.Url,
             Icone = request.Icone,
             ItemPaiId = request.ItemPaiId,
-            OrdemExibicao = request.OrdemExibicao
+            OrdemExibicao = request.OrdemExibicao,
+            CategoriaId = request.CategoriaId  // ← ADICIONAR
         };
-
         _context.ItensMenu.Add(item);
         await _context.SaveChangesAsync();
 

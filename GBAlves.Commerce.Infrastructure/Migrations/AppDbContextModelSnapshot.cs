@@ -265,6 +265,10 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("ativo");
 
+                    b.Property<Guid?>("CategoriaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("categoria_id");
+
                     b.Property<string>("Icone")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
@@ -298,6 +302,8 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .HasColumnName("url");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoriaId");
 
                     b.HasIndex("ItemPaiId");
 
@@ -562,6 +568,10 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("atualizado_em");
 
+                    b.Property<Guid?>("ClienteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("cliente_id");
+
                     b.Property<DateTime>("CriadoEm")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("criado_em");
@@ -592,6 +602,8 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClienteId");
+
                     b.HasIndex("Email")
                         .IsUnique();
 
@@ -600,6 +612,11 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
 
             modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.ItemMenu", b =>
                 {
+                    b.HasOne("GBAlves.Commerce.Domain.Entities.Categoria", "Categoria")
+                        .WithMany()
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("GBAlves.Commerce.Domain.Entities.ItemMenu", "ItemPai")
                         .WithMany("SubItens")
                         .HasForeignKey("ItemPaiId")
@@ -610,6 +627,8 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .HasForeignKey("MenuId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Categoria");
 
                     b.Navigation("ItemPai");
 
@@ -652,6 +671,16 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Categoria");
+                });
+
+            modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.Usuario", b =>
+                {
+                    b.HasOne("GBAlves.Commerce.Domain.Entities.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.Categoria", b =>

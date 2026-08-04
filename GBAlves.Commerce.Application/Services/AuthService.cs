@@ -24,6 +24,7 @@ public class AuthService
     public async Task<LoginResponse?> Login(LoginRequest request)
     {
         var usuario = await _context.Usuarios
+            .Include(u => u.Cliente)
             .FirstOrDefaultAsync(u => u.Email == request.Email && u.Ativo);
 
         if (usuario is null || !BCrypt.Net.BCrypt.Verify(request.Senha, usuario.SenhaHash))
@@ -31,8 +32,17 @@ public class AuthService
 
         var token = GerarToken(usuario);
 
-        return new LoginResponse(token, usuario.Nome, usuario.Email, usuario.NivelAcesso);
+        return new LoginResponse(
+            token,
+            usuario.Id.ToString(),
+            usuario.Nome,
+            usuario.Email,
+            usuario.NivelAcesso,
+            usuario.Cliente?.Telefone,
+            usuario.Cliente?.Cpf
+        );
     }
+
 
     private string GerarToken(Domain.Entities.Usuario usuario)
     {

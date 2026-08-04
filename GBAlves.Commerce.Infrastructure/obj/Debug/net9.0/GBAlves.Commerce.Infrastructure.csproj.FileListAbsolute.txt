@@ -13,3 +13,4 @@ C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Infrastructure\obj\Debug\ne
 C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Infrastructure\obj\Debug\net9.0\refint\GBAlves.Commerce.Infrastructure.dll
 C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Infrastructure\obj\Debug\net9.0\GBAlves.Commerce.Infrastructure.pdb
 C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Infrastructure\obj\Debug\net9.0\ref\GBAlves.Commerce.Infrastructure.dll
+C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Infrastructure\obj\Debug\net9.0\GBAlves.Commerce.Infrastructure.sourcelink.json

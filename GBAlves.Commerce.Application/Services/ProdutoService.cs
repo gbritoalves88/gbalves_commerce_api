@@ -128,6 +128,28 @@ public class ProdutoService : IProdutoService
         );
     }
 
+    public async Task<ProdutoResponse?> ObterPorSlug(string slug)
+    {
+        var produto = await _context.Produtos
+            .Include(p => p.Categoria)
+            .FirstOrDefaultAsync(p => p.Slug == slug && p.Ativo);  // p.Slug, não c.Slug!
+        return produto is null ? null : MapToResponse(produto);
+    }
+
+    public async Task<List<ProdutoResponse>> Buscar(string termo)
+    {
+        return await _context.Produtos
+            .Include(p => p.Categoria)
+            .Where(p => p.Ativo && (
+                EF.Functions.ILike(p.Nome, $"%{termo}%") ||
+                EF.Functions.ILike(p.Descricao, $"%{termo}%")
+            ))
+            .OrderByDescending(p => p.CriadoEm)
+            .Select(p => MapToResponse(p))
+            .ToListAsync();
+    }
+
+
     private static string GerarSlug(string texto)
     {
         return texto

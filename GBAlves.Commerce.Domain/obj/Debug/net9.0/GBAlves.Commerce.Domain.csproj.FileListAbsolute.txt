@@ -9,3 +9,4 @@ C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Domain\obj\Debug\net9.0\GBA
 C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Domain\obj\Debug\net9.0\refint\GBAlves.Commerce.Domain.dll
 C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Domain\obj\Debug\net9.0\GBAlves.Commerce.Domain.pdb
 C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Domain\obj\Debug\net9.0\ref\GBAlves.Commerce.Domain.dll
+C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Domain\obj\Debug\net9.0\GBAlves.Commerce.Domain.sourcelink.json

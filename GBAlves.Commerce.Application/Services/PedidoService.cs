@@ -55,6 +55,22 @@ public class PedidoService : IPedidoService
             };
             _context.Clientes.Add(cliente);
         }
+        else
+        {
+            // Atualizar dados do cliente existente
+            cliente.Nome = request.ClienteNome;
+            cliente.Telefone = request.ClienteTelefone;
+            cliente.Cpf = request.ClienteCpf;
+        }
+
+        // Vincular cliente ao usuário logado (se existir)
+        var usuario = await _context.Usuarios
+            .FirstOrDefaultAsync(u => u.Email == request.ClienteEmail);
+        
+        if (usuario is not null && usuario.ClienteId is null)
+        {
+            usuario.ClienteId = cliente.Id;
+        }
 
         // Criar pedido
         var pedido = new Pedido

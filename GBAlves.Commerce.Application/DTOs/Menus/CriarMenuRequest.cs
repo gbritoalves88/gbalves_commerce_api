@@ -12,5 +12,6 @@ public record CriarItemMenuRequest(
     string? Url,
     string? Icone,
     Guid? ItemPaiId,
-    int OrdemExibicao
+    int OrdemExibicao,
+    Guid? CategoriaId = null  // ← NOVO
 );
