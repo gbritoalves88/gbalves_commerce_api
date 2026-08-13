@@ -1,6 +1,8 @@
-# .NET
+# ========== .NET ==========
 bin/
 obj/
+out/
+publish/
 *.user
 *.suo
 *.cache
@@ -10,6 +12,34 @@ obj/
 .vs/
 .vscode/
 
-# Node (se tiver)
-node_modules/**/bin/ 
-**/obj/ 
+# ========== ASP.NET Core ==========
+appsettings.Development.json
+appsettings.Production.json
+*.log
+*.tmp
+
+# ========== Node (se tiver) ==========
+node_modules/
+dist/
+*.map
+
+# ========== Variáveis de ambiente ==========
+.env
+.env.local
+.env.production
+
+# ========== IDE ==========
+.idea/
+*.sln.docstates
+*.swp
+*.swo
+*~
+
+# ========== Docker ==========
+Dockerfile.local
+docker-compose.override.yml
+
+# ========== Sistema ==========
+.DS_Store
+Thumbs.db
+desktop.ini
