@@ -14,6 +14,7 @@ public class ItemMenu
     public ItemMenu? ItemPai { get; set; }
     public int OrdemExibicao { get; set; }
     public bool Ativo { get; set; } = true;
-
+    public Guid? CategoriaId { get; set; }
+    public Categoria? Categoria { get; set; }
     public ICollection<ItemMenu> SubItens { get; set; } = new List<ItemMenu>();
 }

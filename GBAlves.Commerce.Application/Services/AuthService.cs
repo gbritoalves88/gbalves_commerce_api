@@ -24,6 +24,7 @@ public class AuthService
     public async Task<LoginResponse?> Login(LoginRequest request)
     {
         var usuario = await _context.Usuarios
+            .Include(u => u.Cliente)
             .FirstOrDefaultAsync(u => u.Email == request.Email && u.Ativo);
 
         if (usuario is null || !BCrypt.Net.BCrypt.Verify(request.Senha, usuario.SenhaHash))
@@ -31,13 +32,27 @@ public class AuthService
 
         var token = GerarToken(usuario);
 
-        return new LoginResponse(token, usuario.Nome, usuario.Email, usuario.NivelAcesso);
+        return new LoginResponse(
+            token,
+            usuario.Id.ToString(),
+            usuario.Nome,
+            usuario.Email,
+            usuario.NivelAcesso.ToString(),
+            usuario.Cliente?.Telefone,
+            usuario.Cliente?.Cpf
+        );
     }
 
     private string GerarToken(Domain.Entities.Usuario usuario)
     {
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+        var jwtKey = _configuration["Jwt:Key"] 
+            ?? Environment.GetEnvironmentVariable("JWT_KEY")
+            ?? throw new InvalidOperationException("JWT Key não configurada!");
+
+        if (jwtKey.Length < 32)
+            throw new InvalidOperationException("JWT Key deve ter no mínimo 32 caracteres!");
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
@@ -45,7 +60,7 @@ public class AuthService
             new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
             new Claim(ClaimTypes.Email, usuario.Email),
             new Claim(ClaimTypes.Name, usuario.Nome),
-            new Claim(ClaimTypes.Role, usuario.NivelAcesso)
+            new Claim(ClaimTypes.Role, usuario.NivelAcesso.ToString())
         };
 
         var token = new JwtSecurityToken(

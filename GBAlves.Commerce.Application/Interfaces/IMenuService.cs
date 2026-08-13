@@ -5,9 +5,12 @@ namespace GBAlves.Commerce.Application.Interfaces;
 
 public interface IMenuService
 {
+    Task<MenuResponse?> ObterPorId(Guid id);
     Task<List<MenuResponse>> ObterTodos();
     Task<MenuResponse?> ObterPorLocalizacao(string localizacao);
     Task<MenuResponse> CriarMenu(CriarMenuRequest request);
     Task<ItemMenuResponse> AdicionarItem(Guid menuId, CriarItemMenuRequest request);
     Task<bool> RemoverItem(Guid itemId);
+    Task<bool> ToggleItem(Guid itemId);
+    Task<bool> ToggleMenu(Guid menuId);
 }

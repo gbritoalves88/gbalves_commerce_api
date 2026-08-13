@@ -255,6 +255,37 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                     b.ToTable("configuracao_loja", (string)null);
                 });
 
+            modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.EventoPagamento", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("criado_em");
+
+                    b.Property<string>("Dados")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("dados");
+
+                    b.Property<string>("Evento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("evento");
+
+                    b.Property<Guid>("PagamentoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("pagamento_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PagamentoId");
+
+                    b.ToTable("eventos_pagamento", (string)null);
+                });
+
             modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.ItemMenu", b =>
                 {
                     b.Property<Guid>("Id")
@@ -264,6 +295,10 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                     b.Property<bool>("Ativo")
                         .HasColumnType("boolean")
                         .HasColumnName("ativo");
+
+                    b.Property<Guid?>("CategoriaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("categoria_id");
 
                     b.Property<string>("Icone")
                         .HasMaxLength(50)
@@ -298,6 +333,8 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .HasColumnName("url");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoriaId");
 
                     b.HasIndex("ItemPaiId");
 
@@ -351,6 +388,37 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                     b.ToTable("itens_pedido", (string)null);
                 });
 
+            modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.LogPagamento", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Conteudo")
+                        .HasColumnType("jsonb")
+                        .HasColumnName("conteudo");
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("criado_em");
+
+                    b.Property<Guid>("PagamentoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("pagamento_id");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("tipo");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PagamentoId");
+
+                    b.ToTable("logs_pagamento", (string)null);
+                });
+
             modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.Menu", b =>
                 {
                     b.Property<Guid>("Id")
@@ -382,6 +450,58 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                     b.ToTable("menus", (string)null);
                 });
 
+            modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.Pagamento", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ConfirmadoEm")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("confirmado_em");
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("criado_em");
+
+                    b.Property<string>("Gateway")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("gateway");
+
+                    b.Property<string>("GatewayPagamentoId")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("gateway_pagamento_id");
+
+                    b.Property<string>("Metodo")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("metodo");
+
+                    b.Property<Guid>("PedidoId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("pedido_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("valor");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId");
+
+                    b.ToTable("pagamentos", (string)null);
+                });
+
             modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.Pedido", b =>
                 {
                     b.Property<Guid>("Id")
@@ -411,6 +531,11 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("cliente_id");
 
+                    b.Property<string>("CodigoRastreio")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("codigo_rastreio");
+
                     b.Property<string>("Complemento")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
@@ -420,15 +545,14 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("criado_em");
 
+                    b.Property<DateTime?>("DataEnvio")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("data_envio");
+
                     b.Property<string>("Estado")
                         .HasMaxLength(2)
                         .HasColumnType("character varying(2)")
                         .HasColumnName("estado");
-
-                    b.Property<string>("FormaPagamento")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("forma_pagamento");
 
                     b.Property<decimal>("Frete")
                         .HasColumnType("decimal(10,2)")
@@ -455,15 +579,15 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("rua");
 
+                    b.Property<string>("ServicoFrete")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("servico_frete");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("status");
-
-                    b.Property<string>("StatusPagamento")
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
-                        .HasColumnName("status_pagamento");
 
                     b.Property<decimal>("Subtotal")
                         .HasColumnType("decimal(10,2)")
@@ -472,6 +596,11 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(10,2)")
                         .HasColumnName("total");
+
+                    b.Property<string>("Transportadora")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("transportadora");
 
                     b.HasKey("Id");
 
@@ -486,6 +615,10 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<decimal>("Altura")
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("altura");
+
                     b.Property<bool>("Ativo")
                         .HasColumnType("boolean")
                         .HasColumnName("ativo");
@@ -497,6 +630,10 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                     b.Property<Guid?>("CategoriaId")
                         .HasColumnType("uuid")
                         .HasColumnName("categoria_id");
+
+                    b.Property<decimal>("Comprimento")
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("comprimento");
 
                     b.Property<DateTime>("CriadoEm")
                         .HasColumnType("timestamp with time zone")
@@ -518,11 +655,19 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("imagem_url");
 
+                    b.Property<decimal>("Largura")
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("largura");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("nome");
+
+                    b.Property<decimal>("Peso")
+                        .HasColumnType("decimal(10,3)")
+                        .HasColumnName("peso");
 
                     b.Property<decimal>("Preco")
                         .HasColumnType("decimal(10,2)")
@@ -562,6 +707,10 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("atualizado_em");
 
+                    b.Property<Guid?>("ClienteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("cliente_id");
+
                     b.Property<DateTime>("CriadoEm")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("criado_em");
@@ -592,14 +741,32 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClienteId");
+
                     b.HasIndex("Email")
                         .IsUnique();
 
                     b.ToTable("usuarios", (string)null);
                 });
 
+            modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.EventoPagamento", b =>
+                {
+                    b.HasOne("GBAlves.Commerce.Domain.Entities.Pagamento", "Pagamento")
+                        .WithMany()
+                        .HasForeignKey("PagamentoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pagamento");
+                });
+
             modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.ItemMenu", b =>
                 {
+                    b.HasOne("GBAlves.Commerce.Domain.Entities.Categoria", "Categoria")
+                        .WithMany()
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("GBAlves.Commerce.Domain.Entities.ItemMenu", "ItemPai")
                         .WithMany("SubItens")
                         .HasForeignKey("ItemPaiId")
@@ -610,6 +777,8 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .HasForeignKey("MenuId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Categoria");
 
                     b.Navigation("ItemPai");
 
@@ -634,6 +803,28 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                     b.Navigation("Produto");
                 });
 
+            modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.LogPagamento", b =>
+                {
+                    b.HasOne("GBAlves.Commerce.Domain.Entities.Pagamento", "Pagamento")
+                        .WithMany()
+                        .HasForeignKey("PagamentoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pagamento");
+                });
+
+            modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.Pagamento", b =>
+                {
+                    b.HasOne("GBAlves.Commerce.Domain.Entities.Pedido", "Pedido")
+                        .WithMany("Pagamentos")
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pedido");
+                });
+
             modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.Pedido", b =>
                 {
                     b.HasOne("GBAlves.Commerce.Domain.Entities.Cliente", "Cliente")
@@ -652,6 +843,16 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Categoria");
+                });
+
+            modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.Usuario", b =>
+                {
+                    b.HasOne("GBAlves.Commerce.Domain.Entities.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Cliente");
                 });
 
             modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.Categoria", b =>
@@ -677,6 +878,8 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
             modelBuilder.Entity("GBAlves.Commerce.Domain.Entities.Pedido", b =>
                 {
                     b.Navigation("Itens");
+
+                    b.Navigation("Pagamentos");
                 });
 #pragma warning restore 612, 618
         }

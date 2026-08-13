@@ -7,12 +7,20 @@ using Microsoft.OpenApi.Models;
 using GBAlves.Commerce.Infrastructure.Data;
 using GBAlves.Commerce.Application.Interfaces;
 using GBAlves.Commerce.Application.Services;
-
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// JWT
-var jwtKey = builder.Configuration["Jwt:Key"] ?? "GBAlves_Commerce_SuperSecret_Key_2026!@#$%";
+// ========== JWT (CORRIGIDO) ==========
+var jwtKey = builder.Configuration["Jwt:Key"] 
+    ?? Environment.GetEnvironmentVariable("JWT_KEY")
+    ?? throw new InvalidOperationException(
+        "JWT Key não configurada! Configure Jwt:Key no appsettings ou variável de ambiente JWT_KEY.");
+
+if (jwtKey.Length < 32)
+    throw new InvalidOperationException(
+        "JWT Key deve ter no mínimo 32 caracteres para segurança!");
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -30,6 +38,33 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
+// Rate Limiter
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddPolicy("login", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,  // 10 tentativas
+                Window = TimeSpan.FromMinutes(1),  // por minuto
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0  // Sem fila - rejeita imediatamente
+            }));
+    
+    // Política global (opcional)
+    options.AddPolicy("global", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 100,
+                Window = TimeSpan.FromMinutes(1),
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                QueueLimit = 0
+            }));
+});
+
 // CORS
 builder.Services.AddCors(options =>
 {
@@ -40,6 +75,7 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
 
 // Swagger com JWT
 builder.Services.AddSwaggerGen(c =>
@@ -86,7 +122,23 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IUploadService, UploadService>();
+builder.Services.AddScoped<IPagamentoService, PagamentoService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IFreteService, MelhorEnvioFreteService>();
+builder.Services.AddScoped<IRelatorioService, RelatorioService>();
+builder.Services.AddScoped<IFreteService, MelhorEnvioFreteService>();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => 
+        policy.RequireRole("Admin"));
+    
+    options.AddPolicy("Operador", policy => 
+        policy.RequireRole("Admin", "Operador"));
+    
+    options.AddPolicy("Cliente", policy => 
+        policy.RequireRole("Admin", "Operador", "Cliente"));
+});
 
 var app = builder.Build();
 
@@ -97,7 +149,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAngular");
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();

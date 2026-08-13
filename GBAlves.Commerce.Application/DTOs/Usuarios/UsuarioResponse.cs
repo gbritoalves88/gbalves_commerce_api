@@ -9,3 +9,10 @@ public record UsuarioResponse(
     bool Ativo,
     DateTime CriadoEm
 );
+
+public record AtualizarUsuarioRequest(
+    string Nome,
+    string Email,
+    string? Telefone,
+    string? Cpf
+);

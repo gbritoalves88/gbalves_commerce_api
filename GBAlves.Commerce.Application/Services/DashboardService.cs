@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using GBAlves.Commerce.Application.Interfaces;
 using GBAlves.Commerce.Infrastructure.Data;
+using GBAlves.Commerce.Domain.Enums;
 
 namespace GBAlves.Commerce.Application.Services;
 
@@ -21,9 +22,9 @@ public class DashboardService : IDashboardService
         var totalPedidosHoje = await _context.Pedidos
             .CountAsync(p => p.CriadoEm.Date == hoje);
 
-        var faturamento = await _context.Pedidos
-            .Where(p => p.Status == Domain.Enums.StatusPedido.Pago)
-            .SumAsync(p => p.Total);
+        var faturamento = await _context.Pagamentos
+            .Where(p => p.Status == Domain.Enums.StatusPagamento.Aprovado)
+            .SumAsync(p => p.Valor);
 
         var totalProdutos = await _context.Produtos
             .CountAsync(p => p.Ativo);

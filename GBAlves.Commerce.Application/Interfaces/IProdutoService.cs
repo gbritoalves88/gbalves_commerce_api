@@ -11,4 +11,7 @@ public interface IProdutoService
     Task<ProdutoResponse> Criar(CriarProdutoRequest request);
     Task<ProdutoResponse?> Atualizar(Guid id, AtualizarProdutoRequest request);
     Task<bool> Excluir(Guid id);
+    Task<ProdutoResponse?> ObterPorSlug(string slug);
+    Task<List<ProdutoResponse>> Buscar(string termo);
+    Task<List<ProdutoResponse>> ObterTodosAdmin(); // novo
 }
