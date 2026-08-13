@@ -19,6 +19,9 @@ public class AppDbContext : DbContext
     public DbSet<Menu> Menus { get; set; }
     public DbSet<ItemMenu> ItensMenu { get; set; }
     public DbSet<Banner> Banners { get; set; }
+    public DbSet<Pagamento> Pagamentos { get; set; }
+    public DbSet<LogPagamento> LogsPagamento { get; set; }
+    public DbSet<EventoPagamento> EventosPagamento { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -50,16 +53,13 @@ public class AppDbContext : DbContext
             e.Property(x => x.Nome).HasColumnName("nome").HasMaxLength(100);
             e.Property(x => x.Email).HasColumnName("email").HasMaxLength(200);
             e.Property(x => x.SenhaHash).HasColumnName("senha_hash").HasMaxLength(500);
-            e.Property(x => x.NivelAcesso).HasColumnName("nivel_acesso").HasMaxLength(20);
+            e.Property(x => x.NivelAcesso).HasColumnName("nivel_acesso").HasConversion<string>().HasMaxLength(20);
             e.Property(x => x.Ativo).HasColumnName("ativo");
             e.Property(x => x.ClienteId).HasColumnName("cliente_id");
             e.Property(x => x.CriadoEm).HasColumnName("criado_em");
             e.Property(x => x.AtualizadoEm).HasColumnName("atualizado_em");
 
-            e.HasOne(x => x.Cliente)
-                .WithMany()
-                .HasForeignKey(x => x.ClienteId)
-                .OnDelete(DeleteBehavior.SetNull);
+            e.HasOne(x => x.Cliente).WithMany().HasForeignKey(x => x.ClienteId).OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<Cliente>(e =>
@@ -102,14 +102,15 @@ public class AppDbContext : DbContext
             e.Property(x => x.Estoque).HasColumnName("estoque");
             e.Property(x => x.Destaque).HasColumnName("destaque");
             e.Property(x => x.Ativo).HasColumnName("ativo");
+            e.Property(x => x.Peso).HasColumnName("peso").HasColumnType("decimal(10,3)");
+            e.Property(x => x.Altura).HasColumnName("altura").HasColumnType("decimal(10,2)");
+            e.Property(x => x.Largura).HasColumnName("largura").HasColumnType("decimal(10,2)");
+            e.Property(x => x.Comprimento).HasColumnName("comprimento").HasColumnType("decimal(10,2)");
             e.Property(x => x.CategoriaId).HasColumnName("categoria_id");
             e.Property(x => x.CriadoEm).HasColumnName("criado_em");
             e.Property(x => x.AtualizadoEm).HasColumnName("atualizado_em");
 
-            e.HasOne(x => x.Categoria)
-                .WithMany(x => x.Produtos)
-                .HasForeignKey(x => x.CategoriaId)
-                .OnDelete(DeleteBehavior.SetNull);
+            e.HasOne(x => x.Categoria).WithMany(x => x.Produtos).HasForeignKey(x => x.CategoriaId).OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<Pedido>(e =>
@@ -128,17 +129,16 @@ public class AppDbContext : DbContext
             e.Property(x => x.Bairro).HasColumnName("bairro").HasMaxLength(100);
             e.Property(x => x.Cidade).HasColumnName("cidade").HasMaxLength(100);
             e.Property(x => x.Estado).HasColumnName("estado").HasMaxLength(2);
-            e.Property(x => x.FormaPagamento).HasColumnName("forma_pagamento").HasMaxLength(20);
-            e.Property(x => x.StatusPagamento).HasColumnName("status_pagamento").HasMaxLength(20);
             e.Property(x => x.Observacao).HasColumnName("observacao");
+            e.Property(x => x.Transportadora).HasColumnName("transportadora").HasMaxLength(50);
+            e.Property(x => x.ServicoFrete).HasColumnName("servico_frete").HasMaxLength(50);
+            e.Property(x => x.CodigoRastreio).HasColumnName("codigo_rastreio").HasMaxLength(100);
+            e.Property(x => x.DataEnvio).HasColumnName("data_envio");
             e.Property(x => x.ClienteId).HasColumnName("cliente_id");
             e.Property(x => x.CriadoEm).HasColumnName("criado_em");
             e.Property(x => x.AtualizadoEm).HasColumnName("atualizado_em");
 
-            e.HasOne(x => x.Cliente)
-                .WithMany(x => x.Pedidos)
-                .HasForeignKey(x => x.ClienteId)
-                .OnDelete(DeleteBehavior.SetNull);
+            e.HasOne(x => x.Cliente).WithMany(x => x.Pedidos).HasForeignKey(x => x.ClienteId).OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<ItemPedido>(e =>
@@ -153,15 +153,8 @@ public class AppDbContext : DbContext
             e.Property(x => x.Quantidade).HasColumnName("quantidade");
             e.Property(x => x.Total).HasColumnName("total").HasColumnType("decimal(10,2)");
 
-            e.HasOne(x => x.Pedido)
-                .WithMany(x => x.Itens)
-                .HasForeignKey(x => x.PedidoId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            e.HasOne(x => x.Produto)
-                .WithMany()
-                .HasForeignKey(x => x.ProdutoId)
-                .OnDelete(DeleteBehavior.SetNull);
+            e.HasOne(x => x.Pedido).WithMany(x => x.Itens).HasForeignKey(x => x.PedidoId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(x => x.Produto).WithMany().HasForeignKey(x => x.ProdutoId).OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<Menu>(e =>
@@ -188,20 +181,9 @@ public class AppDbContext : DbContext
             e.Property(x => x.Ativo).HasColumnName("ativo");
             e.Property(x => x.CategoriaId).HasColumnName("categoria_id");
 
-            e.HasOne(x => x.Menu)
-                .WithMany(x => x.Itens)
-                .HasForeignKey(x => x.MenuId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            e.HasOne(x => x.ItemPai)
-                .WithMany(x => x.SubItens)
-                .HasForeignKey(x => x.ItemPaiId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            e.HasOne(x => x.Categoria)
-                .WithMany()
-                .HasForeignKey(x => x.CategoriaId)
-                .OnDelete(DeleteBehavior.SetNull);
+            e.HasOne(x => x.Menu).WithMany(x => x.Itens).HasForeignKey(x => x.MenuId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(x => x.ItemPai).WithMany(x => x.SubItens).HasForeignKey(x => x.ItemPaiId).OnDelete(DeleteBehavior.Cascade);
+            e.HasOne(x => x.Categoria).WithMany().HasForeignKey(x => x.CategoriaId).OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<Banner>(e =>
@@ -216,6 +198,46 @@ public class AppDbContext : DbContext
             e.Property(x => x.OrdemExibicao).HasColumnName("ordem_exibicao");
             e.Property(x => x.Ativo).HasColumnName("ativo");
             e.Property(x => x.CriadoEm).HasColumnName("criado_em");
+        });
+
+        modelBuilder.Entity<Pagamento>(e =>
+        {
+            e.ToTable("pagamentos");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.PedidoId).HasColumnName("pedido_id");
+            e.Property(x => x.Gateway).HasColumnName("gateway").HasMaxLength(20);
+            e.Property(x => x.GatewayPagamentoId).HasColumnName("gateway_pagamento_id").HasMaxLength(100);
+            e.Property(x => x.Metodo).HasColumnName("metodo").HasConversion<string>().HasMaxLength(20);
+            e.Property(x => x.Status).HasColumnName("status").HasConversion<string>().HasMaxLength(20);
+            e.Property(x => x.Valor).HasColumnName("valor").HasColumnType("decimal(10,2)");
+            e.Property(x => x.ConfirmadoEm).HasColumnName("confirmado_em");
+            e.Property(x => x.CriadoEm).HasColumnName("criado_em");
+
+            e.HasOne(x => x.Pedido).WithMany(x => x.Pagamentos).HasForeignKey(x => x.PedidoId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<LogPagamento>(e =>
+        {
+            e.ToTable("logs_pagamento");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.PagamentoId).HasColumnName("pagamento_id");
+            e.Property(x => x.Tipo).HasColumnName("tipo").HasMaxLength(50);
+            e.Property(x => x.Conteudo).HasColumnName("conteudo").HasColumnType("jsonb");
+            e.Property(x => x.CriadoEm).HasColumnName("criado_em");
+
+            e.HasOne(x => x.Pagamento).WithMany().HasForeignKey(x => x.PagamentoId).OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<EventoPagamento>(e =>
+        {
+            e.ToTable("eventos_pagamento");
+            e.HasKey(x => x.Id);
+            e.Property(x => x.PagamentoId).HasColumnName("pagamento_id");
+            e.Property(x => x.Evento).HasColumnName("evento").HasMaxLength(50);
+            e.Property(x => x.Dados).HasColumnName("dados").HasColumnType("jsonb");
+            e.Property(x => x.CriadoEm).HasColumnName("criado_em");
+
+            e.HasOne(x => x.Pagamento).WithMany().HasForeignKey(x => x.PagamentoId).OnDelete(DeleteBehavior.Cascade);
         });
     }
 }

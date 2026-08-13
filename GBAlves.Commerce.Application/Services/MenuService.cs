@@ -19,9 +19,8 @@ public class MenuService : IMenuService
     public async Task<List<MenuResponse>> ObterTodos()
     {
         var menus = await _context.Menus
-            .Include(m => m.Itens.Where(i => i.Ativo && i.ItemPaiId == null))
-                .ThenInclude(i => i.SubItens.Where(s => s.Ativo))
-            .Where(m => m.Ativo)
+            .Include(m => m.Itens.Where(i => i.ItemPaiId == null))
+                .ThenInclude(i => i.SubItens)
             .OrderBy(m => m.Nome)
             .ToListAsync();
 
@@ -38,6 +37,16 @@ public class MenuService : IMenuService
         return menu is null ? null : MapMenuToResponse(menu);
     }
 
+    public async Task<MenuResponse?> ObterPorId(Guid id)
+    {
+        var menu = await _context.Menus
+            .Include(m => m.Itens.Where(i => i.ItemPaiId == null))
+                .ThenInclude(i => i.SubItens)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
+        return menu is null ? null : MapMenuToResponse(menu);
+    }
+
     public async Task<MenuResponse> CriarMenu(CriarMenuRequest request)
     {
         var menu = new Menu
@@ -50,12 +59,12 @@ public class MenuService : IMenuService
         _context.Menus.Add(menu);
         await _context.SaveChangesAsync();
 
-        return new MenuResponse(menu.Id, menu.Nome, menu.Localizacao, new());
+        return MapMenuToResponse(menu);
     }
 
     public async Task<ItemMenuResponse> AdicionarItem(Guid menuId, CriarItemMenuRequest request)
     {
-       var item = new ItemMenu
+        var item = new ItemMenu
         {
             Id = Guid.NewGuid(),
             MenuId = menuId,
@@ -65,20 +74,38 @@ public class MenuService : IMenuService
             Icone = request.Icone,
             ItemPaiId = request.ItemPaiId,
             OrdemExibicao = request.OrdemExibicao,
-            CategoriaId = request.CategoriaId  // ← ADICIONAR
+            CategoriaId = request.CategoriaId
         };
+
         _context.ItensMenu.Add(item);
         await _context.SaveChangesAsync();
 
-        return new ItemMenuResponse(item.Id, item.Nome, item.Slug, item.Url, item.Icone, item.OrdemExibicao, new());
+        return MapItemToResponse(item);
     }
 
     public async Task<bool> RemoverItem(Guid itemId)
     {
         var item = await _context.ItensMenu.FindAsync(itemId);
         if (item is null) return false;
-
         item.Ativo = false;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> ToggleItem(Guid itemId)
+    {
+        var item = await _context.ItensMenu.FindAsync(itemId);
+        if (item is null) return false;
+        item.Ativo = !item.Ativo;
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<bool> ToggleMenu(Guid menuId)
+    {
+        var menu = await _context.Menus.FindAsync(menuId);
+        if (menu is null) return false;
+        menu.Ativo = !menu.Ativo;
         await _context.SaveChangesAsync();
         return true;
     }
@@ -89,6 +116,7 @@ public class MenuService : IMenuService
             menu.Id,
             menu.Nome,
             menu.Localizacao,
+            menu.Ativo,
             menu.Itens.Select(MapItemToResponse).ToList()
         );
     }
@@ -102,6 +130,7 @@ public class MenuService : IMenuService
             item.Url,
             item.Icone,
             item.OrdemExibicao,
+            item.Ativo,
             item.SubItens.Select(MapItemToResponse).ToList()
         );
     }

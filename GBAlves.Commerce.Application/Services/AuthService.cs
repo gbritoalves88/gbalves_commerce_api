@@ -37,17 +37,22 @@ public class AuthService
             usuario.Id.ToString(),
             usuario.Nome,
             usuario.Email,
-            usuario.NivelAcesso,
+            usuario.NivelAcesso.ToString(),
             usuario.Cliente?.Telefone,
             usuario.Cliente?.Cpf
         );
     }
 
-
     private string GerarToken(Domain.Entities.Usuario usuario)
     {
-        var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+        var jwtKey = _configuration["Jwt:Key"] 
+            ?? Environment.GetEnvironmentVariable("JWT_KEY")
+            ?? throw new InvalidOperationException("JWT Key não configurada!");
+
+        if (jwtKey.Length < 32)
+            throw new InvalidOperationException("JWT Key deve ter no mínimo 32 caracteres!");
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
@@ -55,7 +60,7 @@ public class AuthService
             new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
             new Claim(ClaimTypes.Email, usuario.Email),
             new Claim(ClaimTypes.Name, usuario.Nome),
-            new Claim(ClaimTypes.Role, usuario.NivelAcesso)
+            new Claim(ClaimTypes.Role, usuario.NivelAcesso.ToString())
         };
 
         var token = new JwtSecurityToken(

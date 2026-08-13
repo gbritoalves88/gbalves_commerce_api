@@ -9,5 +9,9 @@ public record AtualizarProdutoRequest(
     string? ImagemUrl,
     int Estoque,
     bool Destaque,
-    Guid? CategoriaId
+    Guid? CategoriaId,
+    decimal Peso = 0.3m,
+    decimal Altura = 10,
+    decimal Largura = 15,
+    decimal Comprimento = 20
 );

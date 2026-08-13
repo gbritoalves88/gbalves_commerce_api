@@ -2,10 +2,8 @@
 namespace GBAlves.Commerce.Application.DTOs.Pedidos;
 
 public record CriarPedidoRequest(
-    string ClienteNome,
-    string ClienteEmail,
-    string? ClienteTelefone,
-    string? ClienteCpf,
+    string? ClienteTelefone,    // Opcional - para atualizar
+    string? ClienteCpf,         // Opcional - para atualizar
     string? Cep,
     string? Rua,
     string? Numero,
@@ -13,7 +11,9 @@ public record CriarPedidoRequest(
     string? Bairro,
     string? Cidade,
     string? Estado,
-    string FormaPagamento,
+    decimal Frete,
+    string? Transportadora,
+    string? ServicoFrete,
     List<ItemPedidoRequest> Itens
 );
 

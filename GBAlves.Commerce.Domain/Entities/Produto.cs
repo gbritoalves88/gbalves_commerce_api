@@ -12,6 +12,10 @@ public class Produto : EntidadeBase
     public int Estoque { get; set; }
     public bool Destaque { get; set; }
     public bool Ativo { get; set; } = true;
+    public decimal Peso { get; set; }           // kg
+    public decimal Altura { get; set; }         // cm
+    public decimal Largura { get; set; }        // cm  
+    public decimal Comprimento { get; set; }    // cm
 
     // FK
     public Guid? CategoriaId { get; set; }

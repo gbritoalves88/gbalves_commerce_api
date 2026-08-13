@@ -7,7 +7,7 @@ namespace GBAlves.Commerce.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Policy = "Operador")]  // Admin e Operador
 public class DashboardController : ControllerBase
 {
     private readonly IDashboardService _service;
@@ -17,6 +17,9 @@ public class DashboardController : ControllerBase
         _service = service;
     }
 
+    /// <summary>
+    //✅ OPERADOR/ADMIN - Obter resumo do dashboard
+    /// </summary>
     [HttpGet]
     public async Task<ActionResult<DashboardResponse>> ObterResumo()
     {

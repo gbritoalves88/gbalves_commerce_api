@@ -107,6 +107,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.105.1, )"
+            },
             "CloudinaryDotNet": {
               "target": "Package",
               "version": "[1.29.2, )"
@@ -118,6 +122,10 @@
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[9.0.0, )"
+            },
+            "mercadopago-sdk": {
+              "target": "Package",
+              "version": "[3.4.0, )"
             }
           },
           "imports": [

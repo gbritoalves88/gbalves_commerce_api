@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using GBAlves.Commerce.Application.DTOs.Auth;
 using GBAlves.Commerce.Application.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace GBAlves.Commerce.Api.Controllers;
 
@@ -16,7 +18,11 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    /// <summary>
+    /// Login público - qualquer pessoa pode acessar
+    /// </summary>
     [HttpPost("login")]
+    [EnableRateLimiting("login")]  // ← Adicione isso
     public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
     {
         var response = await _authService.Login(request);
@@ -25,4 +31,6 @@ public class AuthController : ControllerBase
 
         return Ok(response);
     }
+
+    
 }

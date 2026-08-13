@@ -10,6 +10,6 @@ public record CriarUsuarioRequest
     public string? Telefone { get; init; }
     public string? Cpf { get; init; }
 
-    [JsonIgnore]
-    public string NivelAcesso { get; init; } = "cliente";
+    //[JsonIgnore]
+    //public string NivelAcesso { get; init; } = "cliente";
 }

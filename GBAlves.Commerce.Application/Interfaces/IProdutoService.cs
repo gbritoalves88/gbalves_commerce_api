@@ -13,4 +13,5 @@ public interface IProdutoService
     Task<bool> Excluir(Guid id);
     Task<ProdutoResponse?> ObterPorSlug(string slug);
     Task<List<ProdutoResponse>> Buscar(string termo);
+    Task<List<ProdutoResponse>> ObterTodosAdmin(); // novo
 }
