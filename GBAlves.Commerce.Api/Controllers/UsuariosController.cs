@@ -12,14 +12,16 @@ namespace GBAlves.Commerce.Api.Controllers;
 public class UsuariosController : ControllerBase
 {
     private readonly IUsuarioService _usuarioService;
+    private readonly ILogger<UsuariosController> _logger;
 
-    public UsuariosController(IUsuarioService usuarioService)
+    public UsuariosController(IUsuarioService usuarioService, ILogger<UsuariosController> logger)
     {
         _usuarioService = usuarioService;
+        _logger = logger;
     }
 
     /// <summary>
-    //✅ ADMIN - Listar todos os usuários
+    /// ✅ ADMIN - Listar todos os usuários
     /// </summary>
     [HttpGet]
     [Authorize(Policy = "Admin")]
@@ -42,13 +44,19 @@ public class UsuariosController : ControllerBase
         }
         catch (ArgumentException ex)
         {
+            // Erro de validação (senha fraca, email inválido) - OK retornar
             return BadRequest(new { erro = ex.Message });
         }
+        catch (Exception ex)
+        {
+            // Erro inesperado - NÃO expor detalhes
+            _logger.LogError(ex, "Erro ao criar usuário: {Email}", request.Email);
+            return StatusCode(500, new { erro = "Erro interno ao criar conta. Tente novamente." });
+        }
     }
-    
 
     /// <summary>
-    //✅ ADMIN - Excluir usuário
+    /// ✅ ADMIN - Excluir usuário
     /// </summary>
     [HttpDelete("{id:guid}")]
     [Authorize(Policy = "Admin")]
@@ -60,19 +68,27 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    //✅ CLIENTE - Atualizar próprio perfil (ou Admin atualizar qualquer)
+    /// ✅ CLIENTE - Atualizar próprio perfil (ou Admin atualizar qualquer)
     /// </summary>
     [HttpPut("{id:guid}")]
     [Authorize(Policy = "Cliente")]
     public async Task<ActionResult<UsuarioResponse>> Atualizar(Guid id, [FromBody] AtualizarUsuarioRequest request)
     {
-        // Cliente só pode atualizar a si mesmo
-        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (!User.IsInRole("Admin") && usuarioId != id.ToString())
-            return Forbid();
+        try
+        {
+            // Cliente só pode atualizar a si mesmo
+            var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!User.IsInRole("Admin") && usuarioId != id.ToString())
+                return Forbid();
 
-        var usuario = await _usuarioService.Atualizar(id, request);
-        if (usuario is null) return NotFound();
-        return Ok(usuario);
+            var usuario = await _usuarioService.Atualizar(id, request);
+            if (usuario is null) return NotFound();
+            return Ok(usuario);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao atualizar usuário {Id}", id);
+            return StatusCode(500, new { erro = "Erro interno ao atualizar perfil." });
+        }
     }
 }

@@ -37,13 +37,15 @@ public class UploadController : ControllerBase
         }
         catch (ArgumentException ex)
         {
+            // Erro de validação (tamanho, formato inválido) - OK retornar
             _logger.LogWarning("Upload inválido: {Erro}", ex.Message);
             return BadRequest(new { erro = ex.Message });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro no upload");
-            return StatusCode(500, new { erro = "Erro interno no servidor" });
+            // Erro inesperado - NÃO expor detalhes internos
+            _logger.LogError(ex, "Erro interno ao processar upload");
+            return StatusCode(500, new { erro = "Erro interno ao enviar imagem. Tente novamente." });
         }
     }
 }

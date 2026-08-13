@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GBAlves.Commerce.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6ffa05b61485f02fe4a4ba1d0849c432dc7b2da3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0bca5830d4301e86b54e29fe8d4e3bf33968694c")]
 [assembly: System.Reflection.AssemblyProductAttribute("GBAlves.Commerce.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GBAlves.Commerce.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

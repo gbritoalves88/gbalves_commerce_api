@@ -11,31 +11,55 @@ namespace GBAlves.Commerce.Api.Controllers;
 public class ConfiguracaoLojaController : ControllerBase
 {
     private readonly IConfiguracaoLojaService _service;
+    private readonly ILogger<ConfiguracaoLojaController> _logger;
 
-    public ConfiguracaoLojaController(IConfiguracaoLojaService service)
+    public ConfiguracaoLojaController(IConfiguracaoLojaService service, ILogger<ConfiguracaoLojaController> logger)
     {
         _service = service;
+        _logger = logger;
     }
 
     /// <summary>
-    //✅ PÚBLICO - Obter configurações da loja (cores, nome, logo)
+    /// ✅ PÚBLICO - Obter configurações da loja (cores, nome, logo)
     /// </summary>
     [HttpGet]
     [AllowAnonymous]
     public async Task<ActionResult<ConfiguracaoLojaResponse>> Obter()
     {
-        var config = await _service.Obter();
-        return Ok(config);
+        try
+        {
+            var config = await _service.Obter();
+            return Ok(config);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao obter configurações da loja");
+            return StatusCode(500, new { erro = "Erro interno ao carregar configurações." });
+        }
     }
 
     /// <summary>
-    //✅ ADMIN - Atualizar configurações da loja
+    /// ✅ ADMIN - Atualizar configurações da loja
     /// </summary>
     [HttpPut]
     [Authorize(Policy = "Admin")]
     public async Task<ActionResult<ConfiguracaoLojaResponse>> Atualizar([FromBody] AtualizarConfiguracaoLojaRequest request)
     {
-        var config = await _service.Atualizar(request);
-        return Ok(config);
+        try
+        {
+            var config = await _service.Atualizar(request);
+            _logger.LogInformation("Configurações da loja atualizadas");
+            return Ok(config);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogWarning("Dados inválidos ao atualizar configurações: {Erro}", ex.Message);
+            return BadRequest(new { erro = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao atualizar configurações da loja");
+            return StatusCode(500, new { erro = "Erro interno ao atualizar configurações." });
+        }
     }
 }
