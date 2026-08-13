@@ -11,78 +11,141 @@ namespace GBAlves.Commerce.Api.Controllers;
 public class BannersController : ControllerBase
 {
     private readonly IBannerService _bannerService;
+    private readonly ILogger<BannersController> _logger;
 
-    public BannersController(IBannerService bannerService)
+    public BannersController(IBannerService bannerService, ILogger<BannersController> logger)
     {
         _bannerService = bannerService;
+        _logger = logger;
     }
 
     /// <summary>
-    //✅ PÚBLICO - Listar banners (admin)
+    /// ✅ OPERADOR - Listar banners (admin)
     /// </summary>
     [HttpGet]
     [Authorize(Policy = "Operador")]
     public async Task<ActionResult<List<BannerResponse>>> ObterTodos()
     {
-        var banners = await _bannerService.ObterTodos();
-        return Ok(banners);
+        try
+        {
+            var banners = await _bannerService.ObterTodos();
+            return Ok(banners);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao listar banners");
+            return StatusCode(500, new { erro = "Erro interno ao listar banners." });
+        }
     }
 
     /// <summary>
-    //✅ PÚBLICO - Banners ativos (loja)
+    /// ✅ PÚBLICO - Banners ativos (loja)
     /// </summary>
     [HttpGet("ativos")]
     [AllowAnonymous]
     public async Task<ActionResult<List<BannerResponse>>> ObterAtivos()
     {
-        var banners = await _bannerService.ObterAtivos();
-        return Ok(banners);
+        try
+        {
+            var banners = await _bannerService.ObterAtivos();
+            return Ok(banners);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao listar banners ativos");
+            return StatusCode(500, new { erro = "Erro interno ao carregar banners." });
+        }
     }
 
     /// <summary>
-    //✅ ADMIN - Obter banner por ID
+    /// ✅ OPERADOR - Obter banner por ID
     /// </summary>
     [HttpGet("{id:guid}")]
     [Authorize(Policy = "Operador")]
     public async Task<ActionResult<BannerResponse>> ObterPorId(Guid id)
     {
-        var banner = await _bannerService.ObterPorId(id);
-        if (banner is null) return NotFound();
-        return Ok(banner);
+        try
+        {
+            var banner = await _bannerService.ObterPorId(id);
+            if (banner is null) return NotFound(new { erro = "Banner não encontrado" });
+            return Ok(banner);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao obter banner {Id}", id);
+            return StatusCode(500, new { erro = "Erro interno ao carregar banner." });
+        }
     }
 
     /// <summary>
-    //✅ ADMIN - Criar banner
+    /// ✅ ADMIN - Criar banner
     /// </summary>
     [HttpPost]
     [Authorize(Policy = "Admin")]
     public async Task<ActionResult<BannerResponse>> Criar([FromBody] CriarBannerRequest request)
     {
-        var banner = await _bannerService.Criar(request);
-        return CreatedAtAction(nameof(ObterPorId), new { id = banner.Id }, banner);
+        try
+        {
+            var banner = await _bannerService.Criar(request);
+            _logger.LogInformation("Banner criado: {Id} - {Titulo}", banner.Id, banner.Titulo);
+            return CreatedAtAction(nameof(ObterPorId), new { id = banner.Id }, banner);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogWarning("Dados inválidos ao criar banner: {Erro}", ex.Message);
+            return BadRequest(new { erro = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao criar banner");
+            return StatusCode(500, new { erro = "Erro interno ao criar banner." });
+        }
     }
 
     /// <summary>
-    //✅ ADMIN - Atualizar banner
+    /// ✅ ADMIN - Atualizar banner
     /// </summary>
     [HttpPut("{id:guid}")]
     [Authorize(Policy = "Admin")]
     public async Task<ActionResult<BannerResponse>> Atualizar(Guid id, [FromBody] CriarBannerRequest request)
     {
-        var banner = await _bannerService.Atualizar(id, request);
-        if (banner is null) return NotFound();
-        return Ok(banner);
+        try
+        {
+            var banner = await _bannerService.Atualizar(id, request);
+            if (banner is null) return NotFound(new { erro = "Banner não encontrado" });
+            _logger.LogInformation("Banner atualizado: {Id}", id);
+            return Ok(banner);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogWarning("Dados inválidos ao atualizar banner {Id}: {Erro}", id, ex.Message);
+            return BadRequest(new { erro = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao atualizar banner {Id}", id);
+            return StatusCode(500, new { erro = "Erro interno ao atualizar banner." });
+        }
     }
 
     /// <summary>
-    //✅ ADMIN - Excluir banner
+    /// ✅ ADMIN - Excluir banner
     /// </summary>
     [HttpDelete("{id:guid}")]
     [Authorize(Policy = "Admin")]
     public async Task<ActionResult> Excluir(Guid id)
     {
-        var resultado = await _bannerService.Excluir(id);
-        if (!resultado) return NotFound();
-        return NoContent();
+        try
+        {
+            var resultado = await _bannerService.Excluir(id);
+            if (!resultado) return NotFound(new { erro = "Banner não encontrado" });
+            _logger.LogInformation("Banner excluído: {Id}", id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao excluir banner {Id}", id);
+            return StatusCode(500, new { erro = "Erro interno ao excluir banner." });
+        }
     }
 }

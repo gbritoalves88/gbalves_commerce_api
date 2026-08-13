@@ -13,6 +13,25 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "banners",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    titulo = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    subtitulo = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    imagem_url = table.Column<string>(type: "text", nullable: false),
+                    link = table.Column<string>(type: "text", nullable: true),
+                    texto_botao = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    ordem_exibicao = table.Column<int>(type: "integer", nullable: false),
+                    ativo = table.Column<bool>(type: "boolean", nullable: false),
+                    criado_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_banners", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "categorias",
                 columns: table => new
                 {
@@ -79,21 +98,18 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "usuarios",
+                name: "menus",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     nome = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    email = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
-                    senha_hash = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
-                    nivel_acesso = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    localizacao = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     ativo = table.Column<bool>(type: "boolean", nullable: false),
-                    criado_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    atualizado_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    criado_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_usuarios", x => x.Id);
+                    table.PrimaryKey("PK_menus", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -110,6 +126,10 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                     estoque = table.Column<int>(type: "integer", nullable: false),
                     destaque = table.Column<bool>(type: "boolean", nullable: false),
                     ativo = table.Column<bool>(type: "boolean", nullable: false),
+                    peso = table.Column<decimal>(type: "numeric(10,3)", nullable: false),
+                    altura = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
+                    largura = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
+                    comprimento = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
                     categoria_id = table.Column<Guid>(type: "uuid", nullable: true),
                     criado_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     atualizado_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
@@ -143,8 +163,10 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                     bairro = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     cidade = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
                     estado = table.Column<string>(type: "character varying(2)", maxLength: 2, nullable: true),
-                    forma_pagamento = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    status_pagamento = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    transportadora = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    servico_frete = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    codigo_rastreio = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    data_envio = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     observacao = table.Column<string>(type: "text", nullable: true),
                     cliente_id = table.Column<Guid>(type: "uuid", nullable: true),
                     criado_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -159,6 +181,69 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         principalTable: "clientes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "usuarios",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    nome = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    email = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    senha_hash = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    nivel_acesso = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    ativo = table.Column<bool>(type: "boolean", nullable: false),
+                    cliente_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    criado_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    atualizado_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_usuarios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_usuarios_clientes_cliente_id",
+                        column: x => x.cliente_id,
+                        principalTable: "clientes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "itens_menu",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    menu_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    nome = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    slug = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    url = table.Column<string>(type: "text", nullable: true),
+                    icone = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    item_pai_id = table.Column<Guid>(type: "uuid", nullable: true),
+                    ordem_exibicao = table.Column<int>(type: "integer", nullable: false),
+                    ativo = table.Column<bool>(type: "boolean", nullable: false),
+                    categoria_id = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_itens_menu", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_itens_menu_categorias_categoria_id",
+                        column: x => x.categoria_id,
+                        principalTable: "categorias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_itens_menu_itens_menu_item_pai_id",
+                        column: x => x.item_pai_id,
+                        principalTable: "itens_menu",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_itens_menu_menus_menu_id",
+                        column: x => x.menu_id,
+                        principalTable: "menus",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -191,11 +276,98 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                         onDelete: ReferentialAction.SetNull);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "pagamentos",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    pedido_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    gateway = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    gateway_pagamento_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    metodo = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    status = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    valor = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
+                    confirmado_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    criado_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_pagamentos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_pagamentos_pedidos_pedido_id",
+                        column: x => x.pedido_id,
+                        principalTable: "pedidos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "eventos_pagamento",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    pagamento_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    evento = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    dados = table.Column<string>(type: "jsonb", nullable: true),
+                    criado_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_eventos_pagamento", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_eventos_pagamento_pagamentos_pagamento_id",
+                        column: x => x.pagamento_id,
+                        principalTable: "pagamentos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "logs_pagamento",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    pagamento_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    tipo = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    conteudo = table.Column<string>(type: "jsonb", nullable: true),
+                    criado_em = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_logs_pagamento", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_logs_pagamento_pagamentos_pagamento_id",
+                        column: x => x.pagamento_id,
+                        principalTable: "pagamentos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_categorias_slug",
                 table: "categorias",
                 column: "slug",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_eventos_pagamento_pagamento_id",
+                table: "eventos_pagamento",
+                column: "pagamento_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_itens_menu_categoria_id",
+                table: "itens_menu",
+                column: "categoria_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_itens_menu_item_pai_id",
+                table: "itens_menu",
+                column: "item_pai_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_itens_menu_menu_id",
+                table: "itens_menu",
+                column: "menu_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_itens_pedido_pedido_id",
@@ -206,6 +378,16 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                 name: "IX_itens_pedido_produto_id",
                 table: "itens_pedido",
                 column: "produto_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_logs_pagamento_pagamento_id",
+                table: "logs_pagamento",
+                column: "pagamento_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_pagamentos_pedido_id",
+                table: "pagamentos",
+                column: "pedido_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_pedidos_cliente_id",
@@ -224,6 +406,11 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_usuarios_cliente_id",
+                table: "usuarios",
+                column: "cliente_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_usuarios_email",
                 table: "usuarios",
                 column: "email",
@@ -234,25 +421,43 @@ namespace GBAlves.Commerce.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "banners");
+
+            migrationBuilder.DropTable(
                 name: "configuracao_loja");
+
+            migrationBuilder.DropTable(
+                name: "eventos_pagamento");
+
+            migrationBuilder.DropTable(
+                name: "itens_menu");
 
             migrationBuilder.DropTable(
                 name: "itens_pedido");
 
             migrationBuilder.DropTable(
+                name: "logs_pagamento");
+
+            migrationBuilder.DropTable(
                 name: "usuarios");
 
             migrationBuilder.DropTable(
-                name: "pedidos");
+                name: "menus");
 
             migrationBuilder.DropTable(
                 name: "produtos");
 
             migrationBuilder.DropTable(
-                name: "clientes");
+                name: "pagamentos");
 
             migrationBuilder.DropTable(
                 name: "categorias");
+
+            migrationBuilder.DropTable(
+                name: "pedidos");
+
+            migrationBuilder.DropTable(
+                name: "clientes");
         }
     }
 }

@@ -39,18 +39,22 @@ public class WebhookController : ControllerBase
         if (!_pagamentoService.ValidarAssinaturaWebhook(request, signature, requestId))
         {
             _logger.LogWarning("⚠️ Webhook com assinatura inválida! Id={Id}", request.Id);
-            return Unauthorized(); // Retorna 401 para assinatura inválida
+            return Unauthorized(new { erro = "Assinatura inválida" });
         }
 
         try
         {
             await _pagamentoService.ConfirmarPagamentoAsync(request.Id);
-            return Ok();
+            return Ok(new { mensagem = "Notificação processada" });
         }
         catch (Exception ex)
         {
+            // Log interno com detalhes
             _logger.LogError(ex, "Erro ao processar webhook Id={Id}", request.Id);
-            return Ok(); // Retorna 200 mesmo com erro pra não floodar o MP
+            
+            // Retorna 200 mesmo com erro pra não floodar o MP
+            // Mas NÃO expõe detalhes internos
+            return Ok(new { mensagem = "Notificação recebida" });
         }
     }
 }

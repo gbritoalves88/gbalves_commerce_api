@@ -12,25 +12,41 @@ namespace GBAlves.Commerce.Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly AuthService _authService;
+    private readonly ILogger<AuthController> _logger;
 
-    public AuthController(AuthService authService)
+    public AuthController(AuthService authService, ILogger<AuthController> logger)
     {
         _authService = authService;
+        _logger = logger;
     }
 
     /// <summary>
     /// Login público - qualquer pessoa pode acessar
     /// </summary>
     [HttpPost("login")]
-    [EnableRateLimiting("login")]  // ← Adicione isso
+    [EnableRateLimiting("login")]
+    [AllowAnonymous]
     public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request)
     {
-        var response = await _authService.Login(request);
-        if (response is null)
-            return Unauthorized(new { message = "Email ou senha inválidos" });
+        try
+        {
+            var response = await _authService.Login(request);
+            
+            if (response is null)
+            {
+                _logger.LogWarning("Tentativa de login falhou para {Email}", request.Email);
+                return Unauthorized(new { message = "Email ou senha inválidos" });
+            }
 
-        return Ok(response);
+            _logger.LogInformation("Login realizado: {Email} ({NivelAcesso})", 
+                response.Email, response.NivelAcesso);
+            
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao processar login para {Email}", request.Email);
+            return StatusCode(500, new { erro = "Erro interno ao processar login." });
+        }
     }
-
-    
 }

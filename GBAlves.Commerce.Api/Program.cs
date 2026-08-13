@@ -46,13 +46,12 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
             factory: _ => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 10,  // 10 tentativas
-                Window = TimeSpan.FromMinutes(1),  // por minuto
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
                 QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-                QueueLimit = 0  // Sem fila - rejeita imediatamente
+                QueueLimit = 0
             }));
     
-    // Política global (opcional)
     options.AddPolicy("global", httpContext =>
         RateLimitPartition.GetFixedWindowLimiter(
             partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
@@ -75,7 +74,6 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
-
 
 // Swagger com JWT
 builder.Services.AddSwaggerGen(c =>
@@ -108,8 +106,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 // Banco
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? Environment.GetEnvironmentVariable("DATABASE_URL")
+    ?? throw new InvalidOperationException("Connection string não configurada!");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(connectionString));
 
 // Services
 builder.Services.AddScoped<IProdutoService, ProdutoService>();
@@ -126,7 +128,6 @@ builder.Services.AddScoped<IPagamentoService, PagamentoService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IFreteService, MelhorEnvioFreteService>();
 builder.Services.AddScoped<IRelatorioService, RelatorioService>();
-builder.Services.AddScoped<IFreteService, MelhorEnvioFreteService>();
 
 builder.Services.AddAuthorization(options =>
 {
@@ -141,6 +142,28 @@ builder.Services.AddAuthorization(options =>
 });
 
 var app = builder.Build();
+
+// ========== TRATAMENTO GLOBAL DE ERROS ==========
+// NÃO expor detalhes internos (connection string, senha, etc.)
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode = 500;
+        context.Response.ContentType = "application/json";
+
+        // Logar o erro internamente
+        var exceptionFeature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
+        if (exceptionFeature?.Error != null)
+        {
+            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogError(exceptionFeature.Error, "Erro não tratado na aplicação");
+        }
+
+        // Retornar mensagem genérica
+        await context.Response.WriteAsync("{\"erro\": \"Erro interno no servidor. Tente novamente mais tarde.\"}");
+    });
+});
 
 if (app.Environment.IsDevelopment())
 {
