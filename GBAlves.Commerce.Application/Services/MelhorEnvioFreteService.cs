@@ -87,7 +87,7 @@ public class MelhorEnvioFreteService : IFreteService
                     if (c.TryGetProperty("name", out var n)) transportadora = n.GetString()!;
 
                 if (valor > 0)
-                        fretes.Add(new FreteResponse(id, nome, transportadora, valor, prazo));
+                    fretes.Add(new FreteResponse(id, nome, transportadora, valor / 100, prazo));
             }
             catch { }
         }
