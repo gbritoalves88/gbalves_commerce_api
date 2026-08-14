@@ -13,5 +13,9 @@ public record ProdutoResponse(
     bool Destaque,
     bool Ativo,
     string? CategoriaNome,
-    DateTime CriadoEm
+    DateTime CriadoEm,
+    decimal Peso,           // NOVO
+    decimal Altura,         // NOVO
+    decimal Largura,        // NOVO
+    decimal Comprimento     // NOVO
 );

@@ -162,14 +162,14 @@ public class PedidosController : ControllerBase
     /// </summary>
     [HttpPatch("{id:guid}/status")]
     [Authorize(Policy = "Operador")]
-    public async Task<ActionResult> AtualizarStatus(Guid id, [FromBody] string novoStatus)
+    public async Task<ActionResult> AtualizarStatus(Guid id, [FromBody] AtualizarStatusRequest request)
     {
         try
         {
-            var result = await _pedidoService.AtualizarStatus(id, novoStatus);
+            var result = await _pedidoService.AtualizarStatus(id, request.NovoStatus);
             if (!result) return NotFound(new { erro = "Pedido não encontrado" });
             
-            _logger.LogInformation("Status atualizado: Pedido {Id} → {Status}", id, novoStatus);
+            _logger.LogInformation("Status atualizado: Pedido {Id} → {Status}", id, request.NovoStatus);
             return NoContent();
         }
         catch (Exception ex)
@@ -178,7 +178,6 @@ public class PedidosController : ControllerBase
             return StatusCode(500, new { erro = "Erro interno ao atualizar status." });
         }
     }
-
     /// <summary>
     /// ✅ MISTO - Obter pedido por ID (admin vê qualquer, cliente só o seu)
     /// </summary>

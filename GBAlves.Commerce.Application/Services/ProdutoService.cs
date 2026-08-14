@@ -144,7 +144,8 @@ public class ProdutoService : IProdutoService
             p.Id, p.Nome, p.Slug, p.Descricao,
             p.Preco, p.PrecoOriginal, p.ImagemUrl,
             p.Estoque, p.Destaque, p.Ativo,
-            p.Categoria?.Nome, p.CriadoEm
+            p.Categoria?.Nome, p.CriadoEm,
+            p.Peso, p.Altura, p.Largura, p.Comprimento  // ← ADICIONADO
         );
     }
 
@@ -159,6 +160,6 @@ public class ProdutoService : IProdutoService
             .Include(p => p.Categoria)
             .OrderByDescending(p => p.CriadoEm)
             .Select(p => MapToResponse(p))
-            .ToListAsync();  // sem filtro de Ativo ou Estoque
+            .ToListAsync();
     }
 }
