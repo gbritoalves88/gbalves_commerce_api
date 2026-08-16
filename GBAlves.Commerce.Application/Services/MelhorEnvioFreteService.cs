@@ -6,8 +6,7 @@ using GBAlves.Commerce.Application.Interfaces;
 using GBAlves.Commerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Text;
-using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace GBAlves.Commerce.Application.Services;
 
@@ -16,11 +15,16 @@ public class MelhorEnvioFreteService : IFreteService
     private readonly AppDbContext _context;
     private readonly HttpClient _httpClient;
     private readonly IConfiguration _configuration;
+    private readonly ILogger<MelhorEnvioFreteService> _logger;
 
-    public MelhorEnvioFreteService(AppDbContext context, IConfiguration configuration)
+    public MelhorEnvioFreteService(
+        AppDbContext context, 
+        IConfiguration configuration,
+        ILogger<MelhorEnvioFreteService> logger)
     {
         _context = context;
         _configuration = configuration;
+        _logger = logger;
         _httpClient = new HttpClient();
         _httpClient.DefaultRequestHeaders.Add("Accept", "application/json");
         _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {_configuration["MelhorEnvio:Token"]}");
@@ -49,14 +53,23 @@ public class MelhorEnvioFreteService : IFreteService
 
         if (!produtos.Any()) return new List<FreteResponse>();
 
-        var payload = new { from = new { postal_code = cepOrigem }, to = new { postal_code = request.CepDestino }, products = produtos };
+        var payload = new { 
+            from = new { postal_code = cepOrigem }, 
+            to = new { postal_code = request.CepDestino }, 
+            products = produtos 
+        };
 
         var json = JsonSerializer.Serialize(payload);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         var response = await _httpClient.PostAsync("https://melhorenvio.com.br/api/v2/me/shipment/calculate", content);
         var responseBody = await response.Content.ReadAsStringAsync();
 
-        if (!response.IsSuccessStatusCode) return new List<FreteResponse>();
+        if (!response.IsSuccessStatusCode) 
+        {
+            _logger.LogWarning("Melhor Envio retornou erro: {Status} - {Body}", 
+                response.StatusCode, responseBody);
+            return new List<FreteResponse>();
+        }
 
         var result = JsonSerializer.Deserialize<List<JsonElement>>(responseBody);
         if (result is null) return new List<FreteResponse>();
@@ -87,9 +100,24 @@ public class MelhorEnvioFreteService : IFreteService
                     if (c.TryGetProperty("name", out var n)) transportadora = n.GetString()!;
 
                 if (valor > 0)
-                    fretes.Add(new FreteResponse(id, nome, transportadora, valor / 100, prazo));
+                {
+                    // ========== CORREÇÃO DO VALOR ==========
+                    // Local: Melhor Envio retorna em CENTAVOS (ex: 2646 = R$ 26,46)
+                    // Produção: Melhor Envio retorna em REAIS (ex: 14.33 = R$ 14,33)
+                    // Se valor > 100, assume centavos e divide por 100
+                    // Se valor < 100, assume reais e mantém
+                    decimal valorCorrigido = valor > 100 ? valor / 100 : valor;
+                    
+                    _logger.LogInformation("Frete calculado: {Transportadora} {Nome} - Valor original: {ValorOriginal} → Corrigido: {ValorCorrigido}", 
+                        transportadora, nome, valor, valorCorrigido);
+                    
+                    fretes.Add(new FreteResponse(id, nome, transportadora, valorCorrigido, prazo));
+                }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Erro ao processar opção de frete");
+            }
         }
 
         return fretes;
