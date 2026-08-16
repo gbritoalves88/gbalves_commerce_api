@@ -8,10 +8,19 @@ using GBAlves.Commerce.Infrastructure.Data;
 using GBAlves.Commerce.Application.Interfaces;
 using GBAlves.Commerce.Application.Services;
 using System.Threading.RateLimiting;
+using Serilog;
+
+// ========== LOGGING ==========
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
 
-// ========== JWT (CORRIGIDO) ==========
+// ========== JWT ==========
 var jwtKey = builder.Configuration["Jwt:Key"] 
     ?? Environment.GetEnvironmentVariable("JWT_KEY")
     ?? throw new InvalidOperationException(
@@ -69,14 +78,16 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
     {
-        policy.WithOrigins("http://localhost:4200",
-            "https://gbalves-commerce.vercel.app")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.WithOrigins(
+            "http://localhost:4200",
+            "https://gbalves-commerce.vercel.app"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod();
     });
 });
 
-// Swagger com JWT
+// Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -145,7 +156,6 @@ builder.Services.AddAuthorization(options =>
 var app = builder.Build();
 
 // ========== TRATAMENTO GLOBAL DE ERROS ==========
-// NÃO expor detalhes internos (connection string, senha, etc.)
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -153,15 +163,12 @@ app.UseExceptionHandler(errorApp =>
         context.Response.StatusCode = 500;
         context.Response.ContentType = "application/json";
 
-        // Logar o erro internamente
         var exceptionFeature = context.Features.Get<Microsoft.AspNetCore.Diagnostics.IExceptionHandlerFeature>();
         if (exceptionFeature?.Error != null)
         {
-            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-            logger.LogError(exceptionFeature.Error, "Erro não tratado na aplicação");
+            Log.Error(exceptionFeature.Error, "Erro não tratado na aplicação");
         }
 
-        // Retornar mensagem genérica
         await context.Response.WriteAsync("{\"erro\": \"Erro interno no servidor. Tente novamente mais tarde.\"}");
     });
 });
@@ -178,4 +185,16 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.Run();
+try
+{
+    Log.Information("Aplicação iniciada");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Aplicação falhou ao iniciar");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

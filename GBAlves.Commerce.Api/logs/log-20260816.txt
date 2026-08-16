@@ -1,0 +1,794 @@
+2026-08-16 14:06:20.797 -03:00 [INF] Aplicação iniciada
+2026-08-16 14:06:20.875 -03:00 [INF] User profile is available. Using 'C:\Users\biel_\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-08-16 14:06:20.968 -03:00 [INF] Now listening on: http://localhost:5184
+2026-08-16 14:06:20.971 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-08-16 14:06:20.973 -03:00 [INF] Hosting environment: Development
+2026-08-16 14:06:20.973 -03:00 [INF] Content root path: C:\repositorio\gbalves_commerce_api\GBAlves.Commerce.Api
+2026-08-16 14:07:10.598 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Checkout - null null
+2026-08-16 14:07:10.657 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:10.666 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Checkout - 204 null null 72.9089ms
+2026-08-16 14:07:10.687 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5184/api/Checkout - application/json 244
+2026-08-16 14:07:10.695 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:10.790 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.CheckoutController.CriarCheckout (GBAlves.Commerce.Api)'
+2026-08-16 14:07:10.815 -03:00 [INF] Route matched with {action = "CriarCheckout", controller = "Checkout"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[GBAlves.Commerce.Application.DTOs.Pagamentos.CriarCheckoutResponse]] CriarCheckout(GBAlves.Commerce.Application.DTOs.Pagamentos.CriarCheckoutRequest) on controller GBAlves.Commerce.Api.Controllers.CheckoutController (GBAlves.Commerce.Api).
+2026-08-16 14:07:11.852 -03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-08-16 14:07:12.891 -03:00 [INF] Executed DbCommand (65ms) [Parameters=[@__request_PedidoId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p1."Id", p1.atualizado_em, p1.bairro, p1.cep, p1.cidade, p1.cliente_id, p1.codigo_rastreio, p1.complemento, p1.criado_em, p1.data_envio, p1.estado, p1.frete, p1.numero, p1.numero_pedido, p1.observacao, p1.rua, p1.servico_frete, p1.status, p1.subtotal, p1.total, p1.transportadora, i."Id", i.imagem_produto, i.nome_produto, i.pedido_id, i.preco, i.produto_id, i.quantidade, i.total, p0."Id", p0.confirmado_em, p0.criado_em, p0.gateway, p0.gateway_pagamento_id, p0.metodo, p0.pedido_id, p0.status, p0.valor
+FROM (
+    SELECT p."Id", p.atualizado_em, p.bairro, p.cep, p.cidade, p.cliente_id, p.codigo_rastreio, p.complemento, p.criado_em, p.data_envio, p.estado, p.frete, p.numero, p.numero_pedido, p.observacao, p.rua, p.servico_frete, p.status, p.subtotal, p.total, p.transportadora
+    FROM pedidos AS p
+    WHERE p."Id" = @__request_PedidoId_0
+    LIMIT 1
+) AS p1
+LEFT JOIN itens_pedido AS i ON p1."Id" = i.pedido_id
+LEFT JOIN pagamentos AS p0 ON p1."Id" = p0.pedido_id
+ORDER BY p1."Id", i."Id"
+2026-08-16 14:07:13.059 -03:00 [INF] 📤 Enviando pagamento: visa | Valor: ¤106.46
+2026-08-16 14:07:15.193 -03:00 [INF] 📥 Resposta: in_process - pending_contingency
+2026-08-16 14:07:15.349 -03:00 [INF] Executed DbCommand (24ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?', @p4='?', @p5='?', @p6='?' (DbType = Guid), @p7='?', @p8='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO pagamentos ("Id", confirmado_em, criado_em, gateway, gateway_pagamento_id, metodo, pedido_id, status, valor)
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8);
+2026-08-16 14:07:15.402 -03:00 [INF] Executed DbCommand (16ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?' (DbType = Object), @p3='?', @p4='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO eventos_pagamento ("Id", criado_em, dados, evento, pagamento_id)
+VALUES (@p0, @p1, @p2, @p3, @p4);
+2026-08-16 14:07:15.406 -03:00 [INF] Checkout criado: Pedido "24dd3aee-f0b4-4673-9225-533f825518fe" → Pagamento 4c3312b8-ed96-4242-9074-25cca33c85b7
+2026-08-16 14:07:15.414 -03:00 [INF] Executing OkObjectResult, writing value of type 'GBAlves.Commerce.Application.DTOs.Pagamentos.CriarCheckoutResponse'.
+2026-08-16 14:07:15.425 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.CheckoutController.CriarCheckout (GBAlves.Commerce.Api) in 4604.5188ms
+2026-08-16 14:07:15.427 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.CheckoutController.CriarCheckout (GBAlves.Commerce.Api)'
+2026-08-16 14:07:15.437 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5184/api/Checkout - 200 null application/json; charset=utf-8 4751.3508ms
+2026-08-16 14:07:24.851 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Banners/ativos - null null
+2026-08-16 14:07:24.853 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Produtos/destaques - null null
+2026-08-16 14:07:24.858 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:24.858 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:24.859 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Banners/ativos - 204 null null 8.1966ms
+2026-08-16 14:07:24.860 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Produtos/destaques - 204 null null 7.2206ms
+2026-08-16 14:07:24.864 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Produtos/destaques - null null
+2026-08-16 14:07:24.871 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Banners/ativos - null null
+2026-08-16 14:07:24.887 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:24.887 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:24.894 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.ProdutosController.ObterDestaques (GBAlves.Commerce.Api)'
+2026-08-16 14:07:24.894 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.BannersController.ObterAtivos (GBAlves.Commerce.Api)'
+2026-08-16 14:07:24.906 -03:00 [INF] Route matched with {action = "ObterDestaques", controller = "Produtos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[GBAlves.Commerce.Application.DTOs.Produtos.ProdutoResponse]]] ObterDestaques() on controller GBAlves.Commerce.Api.Controllers.ProdutosController (GBAlves.Commerce.Api).
+2026-08-16 14:07:24.906 -03:00 [INF] Route matched with {action = "ObterAtivos", controller = "Banners"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[GBAlves.Commerce.Application.DTOs.Banners.BannerResponse]]] ObterAtivos() on controller GBAlves.Commerce.Api.Controllers.BannersController (GBAlves.Commerce.Api).
+2026-08-16 14:07:24.973 -03:00 [INF] Executed DbCommand (21ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT b."Id", b.ativo, b.criado_em, b.imagem_url, b.link, b.ordem_exibicao, b.subtitulo, b.texto_botao, b.titulo
+FROM banners AS b
+WHERE b.ativo
+ORDER BY b.ordem_exibicao
+2026-08-16 14:07:24.997 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[GBAlves.Commerce.Application.DTOs.Banners.BannerResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:07:25.012 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.BannersController.ObterAtivos (GBAlves.Commerce.Api) in 99.0771ms
+2026-08-16 14:07:25.014 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.BannersController.ObterAtivos (GBAlves.Commerce.Api)'
+2026-08-16 14:07:25.015 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Banners/ativos - 200 null application/json; charset=utf-8 143.9868ms
+2026-08-16 14:07:25.098 -03:00 [INF] Executed DbCommand (34ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT p0."Id", p0.altura, p0.ativo, p0.atualizado_em, p0.categoria_id, p0.comprimento, p0.criado_em, p0.descricao, p0.destaque, p0.estoque, p0.imagem_url, p0.largura, p0.nome, p0.peso, p0.preco, p0.preco_original, p0.slug, c."Id", c.ativo, c.atualizado_em, c.criado_em, c.imagem_url, c.nome, c.ordem_exibicao, c.slug
+FROM (
+    SELECT p."Id", p.altura, p.ativo, p.atualizado_em, p.categoria_id, p.comprimento, p.criado_em, p.descricao, p.destaque, p.estoque, p.imagem_url, p.largura, p.nome, p.peso, p.preco, p.preco_original, p.slug
+    FROM produtos AS p
+    WHERE p.ativo AND p.destaque AND p.estoque > 0
+    ORDER BY p.criado_em DESC
+    LIMIT @__p_0
+) AS p0
+LEFT JOIN categorias AS c ON p0.categoria_id = c."Id"
+ORDER BY p0.criado_em DESC
+2026-08-16 14:07:25.170 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[GBAlves.Commerce.Application.DTOs.Produtos.ProdutoResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:07:25.185 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.ProdutosController.ObterDestaques (GBAlves.Commerce.Api) in 275.6625ms
+2026-08-16 14:07:25.187 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.ProdutosController.ObterDestaques (GBAlves.Commerce.Api)'
+2026-08-16 14:07:25.189 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Produtos/destaques - 200 null application/json; charset=utf-8 324.25ms
+2026-08-16 14:07:28.934 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Dashboard - null null
+2026-08-16 14:07:28.938 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:28.940 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Dashboard - 204 null null 5.4056ms
+2026-08-16 14:07:28.946 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Dashboard - null null
+2026-08-16 14:07:28.949 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:28.957 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.DashboardController.ObterResumo (GBAlves.Commerce.Api)'
+2026-08-16 14:07:28.965 -03:00 [INF] Route matched with {action = "ObterResumo", controller = "Dashboard"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[GBAlves.Commerce.Application.Interfaces.DashboardResponse]] ObterResumo() on controller GBAlves.Commerce.Api.Controllers.DashboardController (GBAlves.Commerce.Api).
+2026-08-16 14:07:29.103 -03:00 [INF] Executed DbCommand (51ms) [Parameters=[@__hoje_0='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+SELECT count(*)::int
+FROM pedidos AS p
+WHERE date_trunc('day', p.criado_em, 'UTC') = @__hoje_0
+2026-08-16 14:07:29.139 -03:00 [INF] Executed DbCommand (18ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COALESCE(sum(p.valor), 0.0)
+FROM pagamentos AS p
+WHERE p.status = 'Aprovado'
+2026-08-16 14:07:29.206 -03:00 [INF] Executed DbCommand (58ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT count(*)::int
+FROM produtos AS p
+WHERE p.ativo
+2026-08-16 14:07:29.263 -03:00 [INF] Executed DbCommand (48ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT count(*)::int
+FROM clientes AS c
+2026-08-16 14:07:29.308 -03:00 [INF] Executed DbCommand (29ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT p0."Id", p0.numero_pedido, c.nome, p0.total, p0.status::text, p0.criado_em
+FROM (
+    SELECT p."Id", p.cliente_id, p.criado_em, p.numero_pedido, p.status, p.total
+    FROM pedidos AS p
+    ORDER BY p.criado_em DESC
+    LIMIT @__p_0
+) AS p0
+LEFT JOIN clientes AS c ON p0.cliente_id = c."Id"
+ORDER BY p0.criado_em DESC
+2026-08-16 14:07:29.314 -03:00 [INF] Executing OkObjectResult, writing value of type 'GBAlves.Commerce.Application.Interfaces.DashboardResponse'.
+2026-08-16 14:07:29.319 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.DashboardController.ObterResumo (GBAlves.Commerce.Api) in 352.1073ms
+2026-08-16 14:07:29.321 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.DashboardController.ObterResumo (GBAlves.Commerce.Api)'
+2026-08-16 14:07:29.322 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Dashboard - 200 null application/json; charset=utf-8 376.0171ms
+2026-08-16 14:07:32.610 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos - null null
+2026-08-16 14:07:32.614 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:32.615 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos - 204 null null 4.9106ms
+2026-08-16 14:07:32.619 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Pedidos - null null
+2026-08-16 14:07:32.623 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:32.629 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.ObterTodos (GBAlves.Commerce.Api)'
+2026-08-16 14:07:32.635 -03:00 [INF] Route matched with {action = "ObterTodos", controller = "Pedidos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse]]] ObterTodos() on controller GBAlves.Commerce.Api.Controllers.PedidosController (GBAlves.Commerce.Api).
+2026-08-16 14:07:32.653 -03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-08-16 14:07:32.687 -03:00 [INF] Executed DbCommand (19ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p.atualizado_em, p.bairro, p.cep, p.cidade, p.cliente_id, p.codigo_rastreio, p.complemento, p.criado_em, p.data_envio, p.estado, p.frete, p.numero, p.numero_pedido, p.observacao, p.rua, p.servico_frete, p.status, p.subtotal, p.total, p.transportadora, c."Id", c.atualizado_em, c.cpf, c.criado_em, c.email, c.nome, c.telefone, i."Id", i.imagem_produto, i.nome_produto, i.pedido_id, i.preco, i.produto_id, i.quantidade, i.total, p0."Id", p0.confirmado_em, p0.criado_em, p0.gateway, p0.gateway_pagamento_id, p0.metodo, p0.pedido_id, p0.status, p0.valor
+FROM pedidos AS p
+LEFT JOIN clientes AS c ON p.cliente_id = c."Id"
+LEFT JOIN itens_pedido AS i ON p."Id" = i.pedido_id
+LEFT JOIN pagamentos AS p0 ON p."Id" = p0.pedido_id
+ORDER BY p.criado_em DESC, p."Id", c."Id", i."Id"
+2026-08-16 14:07:32.725 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:07:32.739 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.PedidosController.ObterTodos (GBAlves.Commerce.Api) in 101.8536ms
+2026-08-16 14:07:32.742 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.ObterTodos (GBAlves.Commerce.Api)'
+2026-08-16 14:07:32.743 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Pedidos - 200 null application/json; charset=utf-8 124.079ms
+2026-08-16 14:07:34.693 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos/24dd3aee-f0b4-4673-9225-533f825518fe - null null
+2026-08-16 14:07:34.697 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:34.699 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos/24dd3aee-f0b4-4673-9225-533f825518fe - 204 null null 5.8714ms
+2026-08-16 14:07:34.703 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Pedidos/24dd3aee-f0b4-4673-9225-533f825518fe - null null
+2026-08-16 14:07:34.709 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:34.712 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.ObterPorId (GBAlves.Commerce.Api)'
+2026-08-16 14:07:34.719 -03:00 [INF] Route matched with {action = "ObterPorId", controller = "Pedidos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse]] ObterPorId(System.Guid) on controller GBAlves.Commerce.Api.Controllers.PedidosController (GBAlves.Commerce.Api).
+2026-08-16 14:07:34.734 -03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-08-16 14:07:34.762 -03:00 [INF] Executed DbCommand (13ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT s."Id", s.atualizado_em, s.bairro, s.cep, s.cidade, s.cliente_id, s.codigo_rastreio, s.complemento, s.criado_em, s.data_envio, s.estado, s.frete, s.numero, s.numero_pedido, s.observacao, s.rua, s.servico_frete, s.status, s.subtotal, s.total, s.transportadora, s."Id0", s.atualizado_em0, s.cpf, s.criado_em0, s.email, s.nome, s.telefone, i."Id", i.imagem_produto, i.nome_produto, i.pedido_id, i.preco, i.produto_id, i.quantidade, i.total, p0."Id", p0.confirmado_em, p0.criado_em, p0.gateway, p0.gateway_pagamento_id, p0.metodo, p0.pedido_id, p0.status, p0.valor
+FROM (
+    SELECT p."Id", p.atualizado_em, p.bairro, p.cep, p.cidade, p.cliente_id, p.codigo_rastreio, p.complemento, p.criado_em, p.data_envio, p.estado, p.frete, p.numero, p.numero_pedido, p.observacao, p.rua, p.servico_frete, p.status, p.subtotal, p.total, p.transportadora, c."Id" AS "Id0", c.atualizado_em AS atualizado_em0, c.cpf, c.criado_em AS criado_em0, c.email, c.nome, c.telefone
+    FROM pedidos AS p
+    LEFT JOIN clientes AS c ON p.cliente_id = c."Id"
+    WHERE p."Id" = @__id_0
+    LIMIT 1
+) AS s
+LEFT JOIN itens_pedido AS i ON s."Id" = i.pedido_id
+LEFT JOIN pagamentos AS p0 ON s."Id" = p0.pedido_id
+ORDER BY s."Id", s."Id0", i."Id"
+2026-08-16 14:07:34.771 -03:00 [INF] Executing OkObjectResult, writing value of type 'GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse'.
+2026-08-16 14:07:34.773 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.PedidosController.ObterPorId (GBAlves.Commerce.Api) in 51.4356ms
+2026-08-16 14:07:34.775 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.ObterPorId (GBAlves.Commerce.Api)'
+2026-08-16 14:07:34.776 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Pedidos/24dd3aee-f0b4-4673-9225-533f825518fe - 200 null application/json; charset=utf-8 72.8859ms
+2026-08-16 14:07:37.336 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos/24dd3aee-f0b4-4673-9225-533f825518fe/cancelar - null null
+2026-08-16 14:07:37.340 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:37.342 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos/24dd3aee-f0b4-4673-9225-533f825518fe/cancelar - 204 null null 5.448ms
+2026-08-16 14:07:37.346 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5184/api/Pedidos/24dd3aee-f0b4-4673-9225-533f825518fe/cancelar - application/json 2
+2026-08-16 14:07:37.351 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:37.353 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.CancelarPedido (GBAlves.Commerce.Api)'
+2026-08-16 14:07:37.358 -03:00 [INF] Route matched with {action = "CancelarPedido", controller = "Pedidos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult] CancelarPedido(System.Guid) on controller GBAlves.Commerce.Api.Controllers.PedidosController (GBAlves.Commerce.Api).
+2026-08-16 14:07:37.372 -03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-08-16 14:07:37.397 -03:00 [INF] Executed DbCommand (16ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p1."Id", p1.atualizado_em, p1.bairro, p1.cep, p1.cidade, p1.cliente_id, p1.codigo_rastreio, p1.complemento, p1.criado_em, p1.data_envio, p1.estado, p1.frete, p1.numero, p1.numero_pedido, p1.observacao, p1.rua, p1.servico_frete, p1.status, p1.subtotal, p1.total, p1.transportadora, i."Id", i.imagem_produto, i.nome_produto, i.pedido_id, i.preco, i.produto_id, i.quantidade, i.total, p0."Id", p0.confirmado_em, p0.criado_em, p0.gateway, p0.gateway_pagamento_id, p0.metodo, p0.pedido_id, p0.status, p0.valor
+FROM (
+    SELECT p."Id", p.atualizado_em, p.bairro, p.cep, p.cidade, p.cliente_id, p.codigo_rastreio, p.complemento, p.criado_em, p.data_envio, p.estado, p.frete, p.numero, p.numero_pedido, p.observacao, p.rua, p.servico_frete, p.status, p.subtotal, p.total, p.transportadora
+    FROM pedidos AS p
+    WHERE p."Id" = @__id_0
+    LIMIT 1
+) AS p1
+LEFT JOIN itens_pedido AS i ON p1."Id" = i.pedido_id
+LEFT JOIN pagamentos AS p0 ON p1."Id" = p0.pedido_id
+ORDER BY p1."Id", i."Id"
+2026-08-16 14:07:37.425 -03:00 [INF] Executed DbCommand (11ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p.altura, p.ativo, p.atualizado_em, p.categoria_id, p.comprimento, p.criado_em, p.descricao, p.destaque, p.estoque, p.imagem_url, p.largura, p.nome, p.peso, p.preco, p.preco_original, p.slug
+FROM produtos AS p
+WHERE p."Id" = @__p_0
+LIMIT 1
+2026-08-16 14:07:37.471 -03:00 [INF] Executed DbCommand (15ms) [Parameters=[@p2='?' (DbType = Guid), @p0='?' (DbType = DateTime), @p1='?', @p4='?' (DbType = Guid), @p3='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+UPDATE pedidos SET atualizado_em = @p0, status = @p1
+WHERE "Id" = @p2;
+UPDATE produtos SET estoque = @p3
+WHERE "Id" = @p4;
+2026-08-16 14:07:37.499 -03:00 [INF] Pedido cancelado: "24dd3aee-f0b4-4673-9225-533f825518fe"
+2026-08-16 14:07:37.501 -03:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType4`1[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-08-16 14:07:37.503 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.PedidosController.CancelarPedido (GBAlves.Commerce.Api) in 143.0133ms
+2026-08-16 14:07:37.505 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.CancelarPedido (GBAlves.Commerce.Api)'
+2026-08-16 14:07:37.507 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5184/api/Pedidos/24dd3aee-f0b4-4673-9225-533f825518fe/cancelar - 200 null application/json; charset=utf-8 160.7772ms
+2026-08-16 14:07:37.511 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Pedidos/24dd3aee-f0b4-4673-9225-533f825518fe - null null
+2026-08-16 14:07:37.513 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:37.516 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.ObterPorId (GBAlves.Commerce.Api)'
+2026-08-16 14:07:37.517 -03:00 [INF] Route matched with {action = "ObterPorId", controller = "Pedidos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse]] ObterPorId(System.Guid) on controller GBAlves.Commerce.Api.Controllers.PedidosController (GBAlves.Commerce.Api).
+2026-08-16 14:07:37.540 -03:00 [INF] Executed DbCommand (17ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT s."Id", s.atualizado_em, s.bairro, s.cep, s.cidade, s.cliente_id, s.codigo_rastreio, s.complemento, s.criado_em, s.data_envio, s.estado, s.frete, s.numero, s.numero_pedido, s.observacao, s.rua, s.servico_frete, s.status, s.subtotal, s.total, s.transportadora, s."Id0", s.atualizado_em0, s.cpf, s.criado_em0, s.email, s.nome, s.telefone, i."Id", i.imagem_produto, i.nome_produto, i.pedido_id, i.preco, i.produto_id, i.quantidade, i.total, p0."Id", p0.confirmado_em, p0.criado_em, p0.gateway, p0.gateway_pagamento_id, p0.metodo, p0.pedido_id, p0.status, p0.valor
+FROM (
+    SELECT p."Id", p.atualizado_em, p.bairro, p.cep, p.cidade, p.cliente_id, p.codigo_rastreio, p.complemento, p.criado_em, p.data_envio, p.estado, p.frete, p.numero, p.numero_pedido, p.observacao, p.rua, p.servico_frete, p.status, p.subtotal, p.total, p.transportadora, c."Id" AS "Id0", c.atualizado_em AS atualizado_em0, c.cpf, c.criado_em AS criado_em0, c.email, c.nome, c.telefone
+    FROM pedidos AS p
+    LEFT JOIN clientes AS c ON p.cliente_id = c."Id"
+    WHERE p."Id" = @__id_0
+    LIMIT 1
+) AS s
+LEFT JOIN itens_pedido AS i ON s."Id" = i.pedido_id
+LEFT JOIN pagamentos AS p0 ON s."Id" = p0.pedido_id
+ORDER BY s."Id", s."Id0", i."Id"
+2026-08-16 14:07:37.544 -03:00 [INF] Executing OkObjectResult, writing value of type 'GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse'.
+2026-08-16 14:07:37.545 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.PedidosController.ObterPorId (GBAlves.Commerce.Api) in 25.777ms
+2026-08-16 14:07:37.547 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.ObterPorId (GBAlves.Commerce.Api)'
+2026-08-16 14:07:37.549 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Pedidos/24dd3aee-f0b4-4673-9225-533f825518fe - 200 null application/json; charset=utf-8 37.9787ms
+2026-08-16 14:07:40.932 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Dashboard - null null
+2026-08-16 14:07:40.938 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:40.940 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Dashboard - 204 null null 7.6649ms
+2026-08-16 14:07:40.944 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Dashboard - null null
+2026-08-16 14:07:40.947 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:40.949 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.DashboardController.ObterResumo (GBAlves.Commerce.Api)'
+2026-08-16 14:07:40.951 -03:00 [INF] Route matched with {action = "ObterResumo", controller = "Dashboard"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[GBAlves.Commerce.Application.Interfaces.DashboardResponse]] ObterResumo() on controller GBAlves.Commerce.Api.Controllers.DashboardController (GBAlves.Commerce.Api).
+2026-08-16 14:07:40.975 -03:00 [INF] Executed DbCommand (20ms) [Parameters=[@__hoje_0='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+SELECT count(*)::int
+FROM pedidos AS p
+WHERE date_trunc('day', p.criado_em, 'UTC') = @__hoje_0
+2026-08-16 14:07:40.991 -03:00 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COALESCE(sum(p.valor), 0.0)
+FROM pagamentos AS p
+WHERE p.status = 'Aprovado'
+2026-08-16 14:07:41.005 -03:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT count(*)::int
+FROM produtos AS p
+WHERE p.ativo
+2026-08-16 14:07:41.019 -03:00 [INF] Executed DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT count(*)::int
+FROM clientes AS c
+2026-08-16 14:07:41.043 -03:00 [INF] Executed DbCommand (18ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT p0."Id", p0.numero_pedido, c.nome, p0.total, p0.status::text, p0.criado_em
+FROM (
+    SELECT p."Id", p.cliente_id, p.criado_em, p.numero_pedido, p.status, p.total
+    FROM pedidos AS p
+    ORDER BY p.criado_em DESC
+    LIMIT @__p_0
+) AS p0
+LEFT JOIN clientes AS c ON p0.cliente_id = c."Id"
+ORDER BY p0.criado_em DESC
+2026-08-16 14:07:41.046 -03:00 [INF] Executing OkObjectResult, writing value of type 'GBAlves.Commerce.Application.Interfaces.DashboardResponse'.
+2026-08-16 14:07:41.048 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.DashboardController.ObterResumo (GBAlves.Commerce.Api) in 94.9111ms
+2026-08-16 14:07:41.051 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.DashboardController.ObterResumo (GBAlves.Commerce.Api)'
+2026-08-16 14:07:41.055 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Dashboard - 200 null application/json; charset=utf-8 109.7806ms
+2026-08-16 14:07:43.682 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Menus - null null
+2026-08-16 14:07:43.684 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Banners/ativos - null null
+2026-08-16 14:07:43.685 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:43.687 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Produtos/destaques - null null
+2026-08-16 14:07:43.689 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:43.691 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Menus - 204 null null 8.8222ms
+2026-08-16 14:07:43.696 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:43.696 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Banners/ativos - 204 null null 12.5051ms
+2026-08-16 14:07:43.700 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Menus - null null
+2026-08-16 14:07:43.701 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Produtos/destaques - 204 null null 14.3427ms
+2026-08-16 14:07:43.704 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Banners/ativos - null null
+2026-08-16 14:07:43.708 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:43.712 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Produtos/destaques - null null
+2026-08-16 14:07:43.715 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:43.717 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.MenusController.ObterTodosMenus (GBAlves.Commerce.Api)'
+2026-08-16 14:07:43.719 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:43.720 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.BannersController.ObterAtivos (GBAlves.Commerce.Api)'
+2026-08-16 14:07:43.722 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.ProdutosController.ObterDestaques (GBAlves.Commerce.Api)'
+2026-08-16 14:07:43.724 -03:00 [INF] Route matched with {action = "ObterAtivos", controller = "Banners"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[GBAlves.Commerce.Application.DTOs.Banners.BannerResponse]]] ObterAtivos() on controller GBAlves.Commerce.Api.Controllers.BannersController (GBAlves.Commerce.Api).
+2026-08-16 14:07:43.725 -03:00 [INF] Route matched with {action = "ObterDestaques", controller = "Produtos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[GBAlves.Commerce.Application.DTOs.Produtos.ProdutoResponse]]] ObterDestaques() on controller GBAlves.Commerce.Api.Controllers.ProdutosController (GBAlves.Commerce.Api).
+2026-08-16 14:07:43.728 -03:00 [INF] Route matched with {action = "ObterTodosMenus", controller = "Menus"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[MenuResponse]]] ObterTodosMenus() on controller GBAlves.Commerce.Api.Controllers.MenusController (GBAlves.Commerce.Api).
+2026-08-16 14:07:43.743 -03:00 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT b."Id", b.ativo, b.criado_em, b.imagem_url, b.link, b.ordem_exibicao, b.subtitulo, b.texto_botao, b.titulo
+FROM banners AS b
+WHERE b.ativo
+ORDER BY b.ordem_exibicao
+2026-08-16 14:07:43.747 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[GBAlves.Commerce.Application.DTOs.Banners.BannerResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:07:43.750 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.BannersController.ObterAtivos (GBAlves.Commerce.Api) in 21.8249ms
+2026-08-16 14:07:43.751 -03:00 [INF] Executed DbCommand (17ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT p0."Id", p0.altura, p0.ativo, p0.atualizado_em, p0.categoria_id, p0.comprimento, p0.criado_em, p0.descricao, p0.destaque, p0.estoque, p0.imagem_url, p0.largura, p0.nome, p0.peso, p0.preco, p0.preco_original, p0.slug, c."Id", c.ativo, c.atualizado_em, c.criado_em, c.imagem_url, c.nome, c.ordem_exibicao, c.slug
+FROM (
+    SELECT p."Id", p.altura, p.ativo, p.atualizado_em, p.categoria_id, p.comprimento, p.criado_em, p.descricao, p.destaque, p.estoque, p.imagem_url, p.largura, p.nome, p.peso, p.preco, p.preco_original, p.slug
+    FROM produtos AS p
+    WHERE p.ativo AND p.destaque AND p.estoque > 0
+    ORDER BY p.criado_em DESC
+    LIMIT @__p_0
+) AS p0
+LEFT JOIN categorias AS c ON p0.categoria_id = c."Id"
+ORDER BY p0.criado_em DESC
+2026-08-16 14:07:43.752 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.BannersController.ObterAtivos (GBAlves.Commerce.Api)'
+2026-08-16 14:07:43.755 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[GBAlves.Commerce.Application.DTOs.Produtos.ProdutoResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:07:43.756 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Banners/ativos - 200 null application/json; charset=utf-8 51.6328ms
+2026-08-16 14:07:43.759 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.ProdutosController.ObterDestaques (GBAlves.Commerce.Api) in 27.7958ms
+2026-08-16 14:07:43.761 -03:00 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2026-08-16 14:07:43.765 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.ProdutosController.ObterDestaques (GBAlves.Commerce.Api)'
+2026-08-16 14:07:43.767 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Produtos/destaques - 200 null application/json; charset=utf-8 55.1298ms
+2026-08-16 14:07:43.809 -03:00 [INF] Executed DbCommand (22ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT m."Id", m.ativo, m.criado_em, m.localizacao, m.nome, s."Id", s.ativo, s.categoria_id, s.icone, s.item_pai_id, s.menu_id, s.nome, s.ordem_exibicao, s.slug, s.url, s."Id0", s.ativo0, s.categoria_id0, s.icone0, s.item_pai_id0, s.menu_id0, s.nome0, s.ordem_exibicao0, s.slug0, s.url0
+FROM menus AS m
+LEFT JOIN (
+    SELECT i."Id", i.ativo, i.categoria_id, i.icone, i.item_pai_id, i.menu_id, i.nome, i.ordem_exibicao, i.slug, i.url, i0."Id" AS "Id0", i0.ativo AS ativo0, i0.categoria_id AS categoria_id0, i0.icone AS icone0, i0.item_pai_id AS item_pai_id0, i0.menu_id AS menu_id0, i0.nome AS nome0, i0.ordem_exibicao AS ordem_exibicao0, i0.slug AS slug0, i0.url AS url0
+    FROM itens_menu AS i
+    LEFT JOIN itens_menu AS i0 ON i."Id" = i0.item_pai_id
+    WHERE i.item_pai_id IS NULL
+) AS s ON m."Id" = s.menu_id
+ORDER BY m.nome, m."Id", s."Id"
+2026-08-16 14:07:43.851 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[MenuResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:07:43.855 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.MenusController.ObterTodosMenus (GBAlves.Commerce.Api) in 121.5285ms
+2026-08-16 14:07:43.858 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.MenusController.ObterTodosMenus (GBAlves.Commerce.Api)'
+2026-08-16 14:07:43.859 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Menus - 200 null application/json; charset=utf-8 159.0562ms
+2026-08-16 14:07:55.048 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Frete/calcular - null null
+2026-08-16 14:07:55.051 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Frete/calcular - null null
+2026-08-16 14:07:55.051 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:55.054 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:55.055 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Frete/calcular - 204 null null 7.7321ms
+2026-08-16 14:07:55.056 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Frete/calcular - 204 null null 5.3538ms
+2026-08-16 14:07:55.060 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5184/api/Frete/calcular - application/json 103
+2026-08-16 14:07:55.064 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5184/api/Frete/calcular - application/json 103
+2026-08-16 14:07:55.066 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:55.069 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:07:55.070 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.FreteController.CalcularFrete (GBAlves.Commerce.Api)'
+2026-08-16 14:07:55.070 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.FreteController.CalcularFrete (GBAlves.Commerce.Api)'
+2026-08-16 14:07:55.074 -03:00 [INF] Route matched with {action = "CalcularFrete", controller = "Frete"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[GBAlves.Commerce.Application.DTOs.Fretes.FreteResponse]]] CalcularFrete(GBAlves.Commerce.Application.DTOs.Fretes.CalcularFreteRequest) on controller GBAlves.Commerce.Api.Controllers.FreteController (GBAlves.Commerce.Api).
+2026-08-16 14:07:55.075 -03:00 [INF] Route matched with {action = "CalcularFrete", controller = "Frete"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[GBAlves.Commerce.Application.DTOs.Fretes.FreteResponse]]] CalcularFrete(GBAlves.Commerce.Application.DTOs.Fretes.CalcularFreteRequest) on controller GBAlves.Commerce.Api.Controllers.FreteController (GBAlves.Commerce.Api).
+2026-08-16 14:07:55.107 -03:00 [INF] Executed DbCommand (14ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p.altura, p.ativo, p.atualizado_em, p.categoria_id, p.comprimento, p.criado_em, p.descricao, p.destaque, p.estoque, p.imagem_url, p.largura, p.nome, p.peso, p.preco, p.preco_original, p.slug
+FROM produtos AS p
+WHERE p."Id" = @__p_0
+LIMIT 1
+2026-08-16 14:07:55.107 -03:00 [INF] Executed DbCommand (14ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p.altura, p.ativo, p.atualizado_em, p.categoria_id, p.comprimento, p.criado_em, p.descricao, p.destaque, p.estoque, p.imagem_url, p.largura, p.nome, p.peso, p.preco, p.preco_original, p.slug
+FROM produtos AS p
+WHERE p."Id" = @__p_0
+LIMIT 1
+2026-08-16 14:07:55.565 -03:00 [INF] Frete calculado: Correios SEDEX - Valor original: 2646 → Corrigido: 26.46
+2026-08-16 14:07:55.565 -03:00 [INF] Frete calculado: Correios SEDEX - Valor original: 2646 → Corrigido: 26.46
+2026-08-16 14:07:55.568 -03:00 [INF] Frete calculado: Jadlog .Package - Valor original: 2048 → Corrigido: 20.48
+2026-08-16 14:07:55.569 -03:00 [INF] Frete calculado: Jadlog .Package - Valor original: 2048 → Corrigido: 20.48
+2026-08-16 14:07:55.570 -03:00 [INF] Frete calculado: Jadlog .Com - Valor original: 2065 → Corrigido: 20.65
+2026-08-16 14:07:55.572 -03:00 [INF] Frete calculado: Jadlog .Com - Valor original: 2065 → Corrigido: 20.65
+2026-08-16 14:07:55.574 -03:00 [INF] Frete calculado: Azul Cargo Express Expresso - Valor original: 4565 → Corrigido: 45.65
+2026-08-16 14:07:55.575 -03:00 [INF] Frete calculado: Azul Cargo Express Expresso - Valor original: 4565 → Corrigido: 45.65
+2026-08-16 14:07:55.577 -03:00 [INF] Frete calculado: Azul Cargo Express e-commerce - Valor original: 4781 → Corrigido: 47.81
+2026-08-16 14:07:55.579 -03:00 [INF] Frete calculado: Azul Cargo Express e-commerce - Valor original: 4781 → Corrigido: 47.81
+2026-08-16 14:07:55.581 -03:00 [INF] Frete calculado: Buslog Rodoviário - Valor original: 2765 → Corrigido: 27.65
+2026-08-16 14:07:55.583 -03:00 [INF] Frete calculado: Buslog Rodoviário - Valor original: 2765 → Corrigido: 27.65
+2026-08-16 14:07:55.584 -03:00 [INF] Frete calculado: Jadlog .Package Centralizado - Valor original: 2714 → Corrigido: 27.14
+2026-08-16 14:07:55.585 -03:00 [INF] Frete calculado: Jadlog .Package Centralizado - Valor original: 2714 → Corrigido: 27.14
+2026-08-16 14:07:55.587 -03:00 [INF] Frete calculado: Loggi Express - Valor original: 3796 → Corrigido: 37.96
+2026-08-16 14:07:55.588 -03:00 [INF] Frete calculado: Loggi Express - Valor original: 3796 → Corrigido: 37.96
+2026-08-16 14:07:55.590 -03:00 [INF] Frete calculado: Loggi Coleta - Valor original: 4488 → Corrigido: 44.88
+2026-08-16 14:07:55.592 -03:00 [INF] Frete calculado: Loggi Coleta - Valor original: 4488 → Corrigido: 44.88
+2026-08-16 14:07:55.594 -03:00 [INF] Frete calculado: JeT Standard - Valor original: 2614 → Corrigido: 26.14
+2026-08-16 14:07:55.595 -03:00 [INF] Frete calculado: JeT Standard - Valor original: 2614 → Corrigido: 26.14
+2026-08-16 14:07:55.597 -03:00 [INF] Frete calculado: Loggi Loggi Ponto - Valor original: 2328 → Corrigido: 23.28
+2026-08-16 14:07:55.599 -03:00 [INF] Frete calculado: Loggi Loggi Ponto - Valor original: 2328 → Corrigido: 23.28
+2026-08-16 14:07:55.600 -03:00 [INF] Frete calculado: Total Express Standard - Valor original: 2999 → Corrigido: 29.99
+2026-08-16 14:07:55.602 -03:00 [INF] Frete calculado: Total Express Standard - Valor original: 2999 → Corrigido: 29.99
+2026-08-16 14:07:55.604 -03:00 [INF] Frete calculado: CEP 03275000, 12 opções
+2026-08-16 14:07:55.605 -03:00 [INF] Frete calculado: CEP 03275000, 12 opções
+2026-08-16 14:07:55.607 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[GBAlves.Commerce.Application.DTOs.Fretes.FreteResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:07:55.608 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[GBAlves.Commerce.Application.DTOs.Fretes.FreteResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:07:55.611 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.FreteController.CalcularFrete (GBAlves.Commerce.Api) in 532.6288ms
+2026-08-16 14:07:55.611 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.FreteController.CalcularFrete (GBAlves.Commerce.Api) in 534.8435ms
+2026-08-16 14:07:55.612 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.FreteController.CalcularFrete (GBAlves.Commerce.Api)'
+2026-08-16 14:07:55.614 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.FreteController.CalcularFrete (GBAlves.Commerce.Api)'
+2026-08-16 14:07:55.615 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5184/api/Frete/calcular - 200 null application/json; charset=utf-8 551.2784ms
+2026-08-16 14:07:55.616 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5184/api/Frete/calcular - 200 null application/json; charset=utf-8 556.2599ms
+2026-08-16 14:08:04.988 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos - null null
+2026-08-16 14:08:04.991 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:08:04.993 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos - 204 null null 4.7441ms
+2026-08-16 14:08:04.996 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5184/api/Pedidos - application/json 340
+2026-08-16 14:08:05.000 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:08:05.001 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.Criar (GBAlves.Commerce.Api)'
+2026-08-16 14:08:05.007 -03:00 [INF] Route matched with {action = "Criar", controller = "Pedidos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse]] Criar(GBAlves.Commerce.Application.DTOs.Pedidos.CriarPedidoRequest) on controller GBAlves.Commerce.Api.Controllers.PedidosController (GBAlves.Commerce.Api).
+2026-08-16 14:08:05.057 -03:00 [INF] Executed DbCommand (17ms) [Parameters=[@__usuarioId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u.ativo, u.atualizado_em, u.cliente_id, u.criado_em, u.email, u.nivel_acesso, u.nome, u.senha_hash, c."Id", c.atualizado_em, c.cpf, c.criado_em, c.email, c.nome, c.telefone
+FROM usuarios AS u
+LEFT JOIN clientes AS c ON u.cliente_id = c."Id"
+WHERE u."Id" = @__usuarioId_0
+LIMIT 1
+2026-08-16 14:08:05.092 -03:00 [INF] Executed DbCommand (12ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p.altura, p.ativo, p.atualizado_em, p.categoria_id, p.comprimento, p.criado_em, p.descricao, p.destaque, p.estoque, p.imagem_url, p.largura, p.nome, p.peso, p.preco, p.preco_original, p.slug
+FROM produtos AS p
+WHERE p."Id" = @__p_0
+LIMIT 1
+2026-08-16 14:08:05.517 -03:00 [INF] Frete calculado: Correios SEDEX - Valor original: 2646 → Corrigido: 26.46
+2026-08-16 14:08:05.518 -03:00 [INF] Frete calculado: Jadlog .Package - Valor original: 2048 → Corrigido: 20.48
+2026-08-16 14:08:05.521 -03:00 [INF] Frete calculado: Jadlog .Com - Valor original: 2065 → Corrigido: 20.65
+2026-08-16 14:08:05.523 -03:00 [INF] Frete calculado: Azul Cargo Express Expresso - Valor original: 4565 → Corrigido: 45.65
+2026-08-16 14:08:05.525 -03:00 [INF] Frete calculado: Azul Cargo Express e-commerce - Valor original: 4781 → Corrigido: 47.81
+2026-08-16 14:08:05.527 -03:00 [INF] Frete calculado: Buslog Rodoviário - Valor original: 2765 → Corrigido: 27.65
+2026-08-16 14:08:05.528 -03:00 [INF] Frete calculado: Jadlog .Package Centralizado - Valor original: 2714 → Corrigido: 27.14
+2026-08-16 14:08:05.530 -03:00 [INF] Frete calculado: Loggi Express - Valor original: 3796 → Corrigido: 37.96
+2026-08-16 14:08:05.532 -03:00 [INF] Frete calculado: Loggi Coleta - Valor original: 4488 → Corrigido: 44.88
+2026-08-16 14:08:05.533 -03:00 [INF] Frete calculado: JeT Standard - Valor original: 2614 → Corrigido: 26.14
+2026-08-16 14:08:05.535 -03:00 [INF] Frete calculado: Loggi Loggi Ponto - Valor original: 2328 → Corrigido: 23.28
+2026-08-16 14:08:05.537 -03:00 [INF] Frete calculado: Total Express Standard - Valor original: 2999 → Corrigido: 29.99
+2026-08-16 14:08:05.587 -03:00 [INF] Executed DbCommand (20ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?', @p3='?', @p4='?', @p5='?' (DbType = Guid), @p6='?', @p7='?', @p8='?' (DbType = DateTime), @p9='?' (DbType = DateTime), @p10='?', @p11='?' (DbType = Decimal), @p12='?', @p13='?', @p14='?', @p15='?', @p16='?', @p17='?' (DbType = Decimal), @p18='?' (DbType = Decimal), @p19='?', @p21='?' (DbType = Guid), @p20='?' (DbType = Int32), @p22='?' (DbType = Guid), @p23='?', @p24='?', @p25='?' (DbType = Guid), @p26='?' (DbType = Decimal), @p27='?' (DbType = Guid), @p28='?' (DbType = Int32), @p29='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO pedidos ("Id", atualizado_em, bairro, cep, cidade, cliente_id, codigo_rastreio, complemento, criado_em, data_envio, estado, frete, numero, observacao, rua, servico_frete, status, subtotal, total, transportadora)
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19)
+RETURNING numero_pedido;
+UPDATE produtos SET estoque = @p20
+WHERE "Id" = @p21;
+INSERT INTO itens_pedido ("Id", imagem_produto, nome_produto, pedido_id, preco, produto_id, quantidade, total)
+VALUES (@p22, @p23, @p24, @p25, @p26, @p27, @p28, @p29);
+2026-08-16 14:08:05.617 -03:00 [WRN] The query uses the 'First'/'FirstOrDefault' operator without 'OrderBy' and filter operators. This may lead to unpredictable results.
+2026-08-16 14:08:05.641 -03:00 [INF] Executed DbCommand (17ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT c."Id", c.atualizado_em, c.banner_desktop, c.banner_mobile, c.cor_fundo, c.cor_primaria, c.cor_secundaria, c.cor_texto, c.criado_em, c."Email", c."Facebook", c."Favicon", c.google_analytics, c."Instagram", c."Logo", c.nome_loja, c.seo_descricao, c.seo_palavras, c.seo_titulo, c."Telefone", c.whatsapp
+FROM configuracao_loja AS c
+LIMIT 1
+2026-08-16 14:08:08.795 -03:00 [INF] 📧 Email enviado para g.britoalves888@gmail.com - Pedido #11
+2026-08-16 14:08:08.796 -03:00 [INF] Pedido criado: "bef0a848-79c5-4904-8bd4-8f8ba70cbfc8" - #11
+2026-08-16 14:08:08.798 -03:00 [INF] Executing CreatedAtActionResult, writing value of type 'GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse'.
+2026-08-16 14:08:08.812 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.PedidosController.Criar (GBAlves.Commerce.Api) in 3803.1794ms
+2026-08-16 14:08:08.815 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.Criar (GBAlves.Commerce.Api)'
+2026-08-16 14:08:08.816 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5184/api/Pedidos - 201 null application/json; charset=utf-8 3819.6851ms
+2026-08-16 14:08:29.172 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Checkout - null null
+2026-08-16 14:08:29.180 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:08:29.181 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Checkout - 204 null null 9.4783ms
+2026-08-16 14:08:29.186 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5184/api/Checkout - application/json 244
+2026-08-16 14:08:29.190 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:08:29.191 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.CheckoutController.CriarCheckout (GBAlves.Commerce.Api)'
+2026-08-16 14:08:29.193 -03:00 [INF] Route matched with {action = "CriarCheckout", controller = "Checkout"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[GBAlves.Commerce.Application.DTOs.Pagamentos.CriarCheckoutResponse]] CriarCheckout(GBAlves.Commerce.Application.DTOs.Pagamentos.CriarCheckoutRequest) on controller GBAlves.Commerce.Api.Controllers.CheckoutController (GBAlves.Commerce.Api).
+2026-08-16 14:08:29.209 -03:00 [INF] Executed DbCommand (11ms) [Parameters=[@__request_PedidoId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p1."Id", p1.atualizado_em, p1.bairro, p1.cep, p1.cidade, p1.cliente_id, p1.codigo_rastreio, p1.complemento, p1.criado_em, p1.data_envio, p1.estado, p1.frete, p1.numero, p1.numero_pedido, p1.observacao, p1.rua, p1.servico_frete, p1.status, p1.subtotal, p1.total, p1.transportadora, i."Id", i.imagem_produto, i.nome_produto, i.pedido_id, i.preco, i.produto_id, i.quantidade, i.total, p0."Id", p0.confirmado_em, p0.criado_em, p0.gateway, p0.gateway_pagamento_id, p0.metodo, p0.pedido_id, p0.status, p0.valor
+FROM (
+    SELECT p."Id", p.atualizado_em, p.bairro, p.cep, p.cidade, p.cliente_id, p.codigo_rastreio, p.complemento, p.criado_em, p.data_envio, p.estado, p.frete, p.numero, p.numero_pedido, p.observacao, p.rua, p.servico_frete, p.status, p.subtotal, p.total, p.transportadora
+    FROM pedidos AS p
+    WHERE p."Id" = @__request_PedidoId_0
+    LIMIT 1
+) AS p1
+LEFT JOIN itens_pedido AS i ON p1."Id" = i.pedido_id
+LEFT JOIN pagamentos AS p0 ON p1."Id" = p0.pedido_id
+ORDER BY p1."Id", i."Id"
+2026-08-16 14:08:29.212 -03:00 [INF] 📤 Enviando pagamento: visa | Valor: ¤106.46
+2026-08-16 14:08:30.577 -03:00 [INF] 📥 Resposta: in_process - pending_contingency
+2026-08-16 14:08:30.593 -03:00 [INF] Executed DbCommand (11ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?', @p4='?', @p5='?', @p6='?' (DbType = Guid), @p7='?', @p8='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO pagamentos ("Id", confirmado_em, criado_em, gateway, gateway_pagamento_id, metodo, pedido_id, status, valor)
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8);
+2026-08-16 14:08:30.607 -03:00 [INF] Executed DbCommand (10ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?' (DbType = Object), @p3='?', @p4='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO eventos_pagamento ("Id", criado_em, dados, evento, pagamento_id)
+VALUES (@p0, @p1, @p2, @p3, @p4);
+2026-08-16 14:08:30.610 -03:00 [INF] Checkout criado: Pedido "bef0a848-79c5-4904-8bd4-8f8ba70cbfc8" → Pagamento 2ad9a70e-77fe-4196-88c6-60cfbed9eb4d
+2026-08-16 14:08:30.611 -03:00 [INF] Executing OkObjectResult, writing value of type 'GBAlves.Commerce.Application.DTOs.Pagamentos.CriarCheckoutResponse'.
+2026-08-16 14:08:30.612 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.CheckoutController.CriarCheckout (GBAlves.Commerce.Api) in 1417.7308ms
+2026-08-16 14:08:30.615 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.CheckoutController.CriarCheckout (GBAlves.Commerce.Api)'
+2026-08-16 14:08:30.617 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5184/api/Checkout - 200 null application/json; charset=utf-8 1430.802ms
+2026-08-16 14:09:56.759 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Checkout - null null
+2026-08-16 14:09:56.763 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:09:56.764 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Checkout - 204 null null 4.3006ms
+2026-08-16 14:09:56.767 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5184/api/Checkout - application/json 244
+2026-08-16 14:09:56.770 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:09:56.772 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.CheckoutController.CriarCheckout (GBAlves.Commerce.Api)'
+2026-08-16 14:09:56.773 -03:00 [INF] Route matched with {action = "CriarCheckout", controller = "Checkout"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[GBAlves.Commerce.Application.DTOs.Pagamentos.CriarCheckoutResponse]] CriarCheckout(GBAlves.Commerce.Application.DTOs.Pagamentos.CriarCheckoutRequest) on controller GBAlves.Commerce.Api.Controllers.CheckoutController (GBAlves.Commerce.Api).
+2026-08-16 14:09:56.791 -03:00 [INF] Executed DbCommand (14ms) [Parameters=[@__request_PedidoId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p1."Id", p1.atualizado_em, p1.bairro, p1.cep, p1.cidade, p1.cliente_id, p1.codigo_rastreio, p1.complemento, p1.criado_em, p1.data_envio, p1.estado, p1.frete, p1.numero, p1.numero_pedido, p1.observacao, p1.rua, p1.servico_frete, p1.status, p1.subtotal, p1.total, p1.transportadora, i."Id", i.imagem_produto, i.nome_produto, i.pedido_id, i.preco, i.produto_id, i.quantidade, i.total, p0."Id", p0.confirmado_em, p0.criado_em, p0.gateway, p0.gateway_pagamento_id, p0.metodo, p0.pedido_id, p0.status, p0.valor
+FROM (
+    SELECT p."Id", p.atualizado_em, p.bairro, p.cep, p.cidade, p.cliente_id, p.codigo_rastreio, p.complemento, p.criado_em, p.data_envio, p.estado, p.frete, p.numero, p.numero_pedido, p.observacao, p.rua, p.servico_frete, p.status, p.subtotal, p.total, p.transportadora
+    FROM pedidos AS p
+    WHERE p."Id" = @__request_PedidoId_0
+    LIMIT 1
+) AS p1
+LEFT JOIN itens_pedido AS i ON p1."Id" = i.pedido_id
+LEFT JOIN pagamentos AS p0 ON p1."Id" = p0.pedido_id
+ORDER BY p1."Id", i."Id"
+2026-08-16 14:09:56.797 -03:00 [WRN] Pedido "bef0a848-79c5-4904-8bd4-8f8ba70cbfc8" já possui pagamento ativo! PagamentoId: "2ad9a70e-77fe-4196-88c6-60cfbed9eb4d", Status: "Pendente"
+2026-08-16 14:09:56.799 -03:00 [INF] Checkout criado: Pedido "bef0a848-79c5-4904-8bd4-8f8ba70cbfc8" → Pagamento 2ad9a70e-77fe-4196-88c6-60cfbed9eb4d
+2026-08-16 14:09:56.800 -03:00 [INF] Executing OkObjectResult, writing value of type 'GBAlves.Commerce.Application.DTOs.Pagamentos.CriarCheckoutResponse'.
+2026-08-16 14:09:56.802 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.CheckoutController.CriarCheckout (GBAlves.Commerce.Api) in 27.3094ms
+2026-08-16 14:09:56.804 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.CheckoutController.CriarCheckout (GBAlves.Commerce.Api)'
+2026-08-16 14:09:56.806 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5184/api/Checkout - 200 null application/json; charset=utf-8 38.2941ms
+2026-08-16 14:10:23.879 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Dashboard - null null
+2026-08-16 14:10:23.883 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:10:23.885 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Dashboard - 204 null null 5.8651ms
+2026-08-16 14:10:23.891 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Dashboard - null null
+2026-08-16 14:10:23.895 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:10:23.896 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.DashboardController.ObterResumo (GBAlves.Commerce.Api)'
+2026-08-16 14:10:23.897 -03:00 [INF] Route matched with {action = "ObterResumo", controller = "Dashboard"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[GBAlves.Commerce.Application.Interfaces.DashboardResponse]] ObterResumo() on controller GBAlves.Commerce.Api.Controllers.DashboardController (GBAlves.Commerce.Api).
+2026-08-16 14:10:23.914 -03:00 [INF] Executed DbCommand (12ms) [Parameters=[@__hoje_0='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+SELECT count(*)::int
+FROM pedidos AS p
+WHERE date_trunc('day', p.criado_em, 'UTC') = @__hoje_0
+2026-08-16 14:10:23.931 -03:00 [INF] Executed DbCommand (13ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT COALESCE(sum(p.valor), 0.0)
+FROM pagamentos AS p
+WHERE p.status = 'Aprovado'
+2026-08-16 14:10:23.946 -03:00 [INF] Executed DbCommand (12ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT count(*)::int
+FROM produtos AS p
+WHERE p.ativo
+2026-08-16 14:10:23.966 -03:00 [INF] Executed DbCommand (18ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT count(*)::int
+FROM clientes AS c
+2026-08-16 14:10:23.990 -03:00 [INF] Executed DbCommand (20ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT p0."Id", p0.numero_pedido, c.nome, p0.total, p0.status::text, p0.criado_em
+FROM (
+    SELECT p."Id", p.cliente_id, p.criado_em, p.numero_pedido, p.status, p.total
+    FROM pedidos AS p
+    ORDER BY p.criado_em DESC
+    LIMIT @__p_0
+) AS p0
+LEFT JOIN clientes AS c ON p0.cliente_id = c."Id"
+ORDER BY p0.criado_em DESC
+2026-08-16 14:10:23.992 -03:00 [INF] Executing OkObjectResult, writing value of type 'GBAlves.Commerce.Application.Interfaces.DashboardResponse'.
+2026-08-16 14:10:23.994 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.DashboardController.ObterResumo (GBAlves.Commerce.Api) in 95.1222ms
+2026-08-16 14:10:23.996 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.DashboardController.ObterResumo (GBAlves.Commerce.Api)'
+2026-08-16 14:10:23.998 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Dashboard - 200 null application/json; charset=utf-8 106.5426ms
+2026-08-16 14:10:27.207 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos - null null
+2026-08-16 14:10:27.210 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:10:27.212 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos - 204 null null 4.1603ms
+2026-08-16 14:10:27.216 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Pedidos - null null
+2026-08-16 14:10:27.218 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:10:27.220 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.ObterTodos (GBAlves.Commerce.Api)'
+2026-08-16 14:10:27.221 -03:00 [INF] Route matched with {action = "ObterTodos", controller = "Pedidos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse]]] ObterTodos() on controller GBAlves.Commerce.Api.Controllers.PedidosController (GBAlves.Commerce.Api).
+2026-08-16 14:10:27.235 -03:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p.atualizado_em, p.bairro, p.cep, p.cidade, p.cliente_id, p.codigo_rastreio, p.complemento, p.criado_em, p.data_envio, p.estado, p.frete, p.numero, p.numero_pedido, p.observacao, p.rua, p.servico_frete, p.status, p.subtotal, p.total, p.transportadora, c."Id", c.atualizado_em, c.cpf, c.criado_em, c.email, c.nome, c.telefone, i."Id", i.imagem_produto, i.nome_produto, i.pedido_id, i.preco, i.produto_id, i.quantidade, i.total, p0."Id", p0.confirmado_em, p0.criado_em, p0.gateway, p0.gateway_pagamento_id, p0.metodo, p0.pedido_id, p0.status, p0.valor
+FROM pedidos AS p
+LEFT JOIN clientes AS c ON p.cliente_id = c."Id"
+LEFT JOIN itens_pedido AS i ON p."Id" = i.pedido_id
+LEFT JOIN pagamentos AS p0 ON p."Id" = p0.pedido_id
+ORDER BY p.criado_em DESC, p."Id", c."Id", i."Id"
+2026-08-16 14:10:27.240 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:10:27.242 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.PedidosController.ObterTodos (GBAlves.Commerce.Api) in 19.3036ms
+2026-08-16 14:10:27.244 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.ObterTodos (GBAlves.Commerce.Api)'
+2026-08-16 14:10:27.245 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Pedidos - 200 null application/json; charset=utf-8 29.4324ms
+2026-08-16 14:10:28.857 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8 - null null
+2026-08-16 14:10:28.860 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:10:28.861 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8 - 204 null null 4.4651ms
+2026-08-16 14:10:28.866 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8 - null null
+2026-08-16 14:10:28.869 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:10:28.871 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.ObterPorId (GBAlves.Commerce.Api)'
+2026-08-16 14:10:28.872 -03:00 [INF] Route matched with {action = "ObterPorId", controller = "Pedidos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse]] ObterPorId(System.Guid) on controller GBAlves.Commerce.Api.Controllers.PedidosController (GBAlves.Commerce.Api).
+2026-08-16 14:10:28.894 -03:00 [INF] Executed DbCommand (17ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT s."Id", s.atualizado_em, s.bairro, s.cep, s.cidade, s.cliente_id, s.codigo_rastreio, s.complemento, s.criado_em, s.data_envio, s.estado, s.frete, s.numero, s.numero_pedido, s.observacao, s.rua, s.servico_frete, s.status, s.subtotal, s.total, s.transportadora, s."Id0", s.atualizado_em0, s.cpf, s.criado_em0, s.email, s.nome, s.telefone, i."Id", i.imagem_produto, i.nome_produto, i.pedido_id, i.preco, i.produto_id, i.quantidade, i.total, p0."Id", p0.confirmado_em, p0.criado_em, p0.gateway, p0.gateway_pagamento_id, p0.metodo, p0.pedido_id, p0.status, p0.valor
+FROM (
+    SELECT p."Id", p.atualizado_em, p.bairro, p.cep, p.cidade, p.cliente_id, p.codigo_rastreio, p.complemento, p.criado_em, p.data_envio, p.estado, p.frete, p.numero, p.numero_pedido, p.observacao, p.rua, p.servico_frete, p.status, p.subtotal, p.total, p.transportadora, c."Id" AS "Id0", c.atualizado_em AS atualizado_em0, c.cpf, c.criado_em AS criado_em0, c.email, c.nome, c.telefone
+    FROM pedidos AS p
+    LEFT JOIN clientes AS c ON p.cliente_id = c."Id"
+    WHERE p."Id" = @__id_0
+    LIMIT 1
+) AS s
+LEFT JOIN itens_pedido AS i ON s."Id" = i.pedido_id
+LEFT JOIN pagamentos AS p0 ON s."Id" = p0.pedido_id
+ORDER BY s."Id", s."Id0", i."Id"
+2026-08-16 14:10:28.897 -03:00 [INF] Executing OkObjectResult, writing value of type 'GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse'.
+2026-08-16 14:10:28.899 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.PedidosController.ObterPorId (GBAlves.Commerce.Api) in 24.4192ms
+2026-08-16 14:10:28.901 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.ObterPorId (GBAlves.Commerce.Api)'
+2026-08-16 14:10:28.902 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8 - 200 null application/json; charset=utf-8 35.9803ms
+2026-08-16 14:10:30.048 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8/verificar-pagamento - null null
+2026-08-16 14:10:30.050 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:10:30.051 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8/verificar-pagamento - 204 null null 3.0458ms
+2026-08-16 14:10:30.054 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8/verificar-pagamento - null null
+2026-08-16 14:10:30.056 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:10:30.058 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.VerificarPagamento (GBAlves.Commerce.Api)'
+2026-08-16 14:10:30.062 -03:00 [INF] Route matched with {action = "VerificarPagamento", controller = "Pedidos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult] VerificarPagamento(System.Guid) on controller GBAlves.Commerce.Api.Controllers.PedidosController (GBAlves.Commerce.Api).
+2026-08-16 14:10:30.094 -03:00 [INF] Executed DbCommand (17ms) [Parameters=[@__pedidoId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p1."Id", p1.atualizado_em, p1.bairro, p1.cep, p1.cidade, p1.cliente_id, p1.codigo_rastreio, p1.complemento, p1.criado_em, p1.data_envio, p1.estado, p1.frete, p1.numero, p1.numero_pedido, p1.observacao, p1.rua, p1.servico_frete, p1.status, p1.subtotal, p1.total, p1.transportadora, p0."Id", p0.confirmado_em, p0.criado_em, p0.gateway, p0.gateway_pagamento_id, p0.metodo, p0.pedido_id, p0.status, p0.valor
+FROM (
+    SELECT p."Id", p.atualizado_em, p.bairro, p.cep, p.cidade, p.cliente_id, p.codigo_rastreio, p.complemento, p.criado_em, p.data_envio, p.estado, p.frete, p.numero, p.numero_pedido, p.observacao, p.rua, p.servico_frete, p.status, p.subtotal, p.total, p.transportadora
+    FROM pedidos AS p
+    WHERE p."Id" = @__pedidoId_0
+    LIMIT 1
+) AS p1
+LEFT JOIN pagamentos AS p0 ON p1."Id" = p0.pedido_id
+ORDER BY p1."Id"
+2026-08-16 14:10:30.609 -03:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType5`5[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-08-16 14:10:30.614 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.PedidosController.VerificarPagamento (GBAlves.Commerce.Api) in 549.5111ms
+2026-08-16 14:10:30.616 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.VerificarPagamento (GBAlves.Commerce.Api)'
+2026-08-16 14:10:30.617 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8/verificar-pagamento - 200 null application/json; charset=utf-8 563.4393ms
+2026-08-16 14:20:36.367 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8/verificar-pagamento - null null
+2026-08-16 14:20:36.369 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:20:36.370 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8/verificar-pagamento - 204 null null 3.7389ms
+2026-08-16 14:20:36.374 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8/verificar-pagamento - null null
+2026-08-16 14:20:36.376 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:20:36.377 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.VerificarPagamento (GBAlves.Commerce.Api)'
+2026-08-16 14:20:36.379 -03:00 [INF] Route matched with {action = "VerificarPagamento", controller = "Pedidos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult] VerificarPagamento(System.Guid) on controller GBAlves.Commerce.Api.Controllers.PedidosController (GBAlves.Commerce.Api).
+2026-08-16 14:20:37.596 -03:00 [INF] Executed DbCommand (35ms) [Parameters=[@__pedidoId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p1."Id", p1.atualizado_em, p1.bairro, p1.cep, p1.cidade, p1.cliente_id, p1.codigo_rastreio, p1.complemento, p1.criado_em, p1.data_envio, p1.estado, p1.frete, p1.numero, p1.numero_pedido, p1.observacao, p1.rua, p1.servico_frete, p1.status, p1.subtotal, p1.total, p1.transportadora, p0."Id", p0.confirmado_em, p0.criado_em, p0.gateway, p0.gateway_pagamento_id, p0.metodo, p0.pedido_id, p0.status, p0.valor
+FROM (
+    SELECT p."Id", p.atualizado_em, p.bairro, p.cep, p.cidade, p.cliente_id, p.codigo_rastreio, p.complemento, p.criado_em, p.data_envio, p.estado, p.frete, p.numero, p.numero_pedido, p.observacao, p.rua, p.servico_frete, p.status, p.subtotal, p.total, p.transportadora
+    FROM pedidos AS p
+    WHERE p."Id" = @__pedidoId_0
+    LIMIT 1
+) AS p1
+LEFT JOIN pagamentos AS p0 ON p1."Id" = p0.pedido_id
+ORDER BY p1."Id"
+2026-08-16 14:20:38.125 -03:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType5`5[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-08-16 14:20:38.127 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.PedidosController.VerificarPagamento (GBAlves.Commerce.Api) in 1744.3658ms
+2026-08-16 14:20:38.130 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.VerificarPagamento (GBAlves.Commerce.Api)'
+2026-08-16 14:20:38.131 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8/verificar-pagamento - 200 null application/json; charset=utf-8 1757.7637ms
+2026-08-16 14:20:39.982 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8/verificar-pagamento - null null
+2026-08-16 14:20:39.985 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:20:39.986 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.VerificarPagamento (GBAlves.Commerce.Api)'
+2026-08-16 14:20:39.988 -03:00 [INF] Route matched with {action = "VerificarPagamento", controller = "Pedidos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult] VerificarPagamento(System.Guid) on controller GBAlves.Commerce.Api.Controllers.PedidosController (GBAlves.Commerce.Api).
+2026-08-16 14:20:40.006 -03:00 [INF] Executed DbCommand (15ms) [Parameters=[@__pedidoId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p1."Id", p1.atualizado_em, p1.bairro, p1.cep, p1.cidade, p1.cliente_id, p1.codigo_rastreio, p1.complemento, p1.criado_em, p1.data_envio, p1.estado, p1.frete, p1.numero, p1.numero_pedido, p1.observacao, p1.rua, p1.servico_frete, p1.status, p1.subtotal, p1.total, p1.transportadora, p0."Id", p0.confirmado_em, p0.criado_em, p0.gateway, p0.gateway_pagamento_id, p0.metodo, p0.pedido_id, p0.status, p0.valor
+FROM (
+    SELECT p."Id", p.atualizado_em, p.bairro, p.cep, p.cidade, p.cliente_id, p.codigo_rastreio, p.complemento, p.criado_em, p.data_envio, p.estado, p.frete, p.numero, p.numero_pedido, p.observacao, p.rua, p.servico_frete, p.status, p.subtotal, p.total, p.transportadora
+    FROM pedidos AS p
+    WHERE p."Id" = @__pedidoId_0
+    LIMIT 1
+) AS p1
+LEFT JOIN pagamentos AS p0 ON p1."Id" = p0.pedido_id
+ORDER BY p1."Id"
+2026-08-16 14:20:40.233 -03:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType5`5[[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Decimal, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=9.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-08-16 14:20:40.235 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.PedidosController.VerificarPagamento (GBAlves.Commerce.Api) in 245.2876ms
+2026-08-16 14:20:40.237 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.VerificarPagamento (GBAlves.Commerce.Api)'
+2026-08-16 14:20:40.238 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Pedidos/bef0a848-79c5-4904-8bd4-8f8ba70cbfc8/verificar-pagamento - 200 null application/json; charset=utf-8 256.6628ms
+2026-08-16 14:21:18.737 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Menus - null null
+2026-08-16 14:21:18.742 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:21:18.743 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Banners/ativos - null null
+2026-08-16 14:21:18.744 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Menus - 204 null null 6.4316ms
+2026-08-16 14:21:18.746 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:21:18.748 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Menus - null null
+2026-08-16 14:21:18.750 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Produtos/destaques - null null
+2026-08-16 14:21:18.751 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Banners/ativos - 204 null null 7.8929ms
+2026-08-16 14:21:18.754 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:21:18.758 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:21:18.762 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Banners/ativos - null null
+2026-08-16 14:21:18.764 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.MenusController.ObterTodosMenus (GBAlves.Commerce.Api)'
+2026-08-16 14:21:18.764 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Produtos/destaques - 204 null null 14.04ms
+2026-08-16 14:21:18.767 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:21:18.769 -03:00 [INF] Route matched with {action = "ObterTodosMenus", controller = "Menus"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[MenuResponse]]] ObterTodosMenus() on controller GBAlves.Commerce.Api.Controllers.MenusController (GBAlves.Commerce.Api).
+2026-08-16 14:21:18.773 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:5184/api/Produtos/destaques - null null
+2026-08-16 14:21:18.775 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.BannersController.ObterAtivos (GBAlves.Commerce.Api)'
+2026-08-16 14:21:18.780 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:21:18.781 -03:00 [INF] Route matched with {action = "ObterAtivos", controller = "Banners"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[GBAlves.Commerce.Application.DTOs.Banners.BannerResponse]]] ObterAtivos() on controller GBAlves.Commerce.Api.Controllers.BannersController (GBAlves.Commerce.Api).
+2026-08-16 14:21:18.782 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.ProdutosController.ObterDestaques (GBAlves.Commerce.Api)'
+2026-08-16 14:21:18.785 -03:00 [INF] Route matched with {action = "ObterDestaques", controller = "Produtos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[GBAlves.Commerce.Application.DTOs.Produtos.ProdutoResponse]]] ObterDestaques() on controller GBAlves.Commerce.Api.Controllers.ProdutosController (GBAlves.Commerce.Api).
+2026-08-16 14:21:18.827 -03:00 [INF] Executed DbCommand (47ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT m."Id", m.ativo, m.criado_em, m.localizacao, m.nome, s."Id", s.ativo, s.categoria_id, s.icone, s.item_pai_id, s.menu_id, s.nome, s.ordem_exibicao, s.slug, s.url, s."Id0", s.ativo0, s.categoria_id0, s.icone0, s.item_pai_id0, s.menu_id0, s.nome0, s.ordem_exibicao0, s.slug0, s.url0
+FROM menus AS m
+LEFT JOIN (
+    SELECT i."Id", i.ativo, i.categoria_id, i.icone, i.item_pai_id, i.menu_id, i.nome, i.ordem_exibicao, i.slug, i.url, i0."Id" AS "Id0", i0.ativo AS ativo0, i0.categoria_id AS categoria_id0, i0.icone AS icone0, i0.item_pai_id AS item_pai_id0, i0.menu_id AS menu_id0, i0.nome AS nome0, i0.ordem_exibicao AS ordem_exibicao0, i0.slug AS slug0, i0.url AS url0
+    FROM itens_menu AS i
+    LEFT JOIN itens_menu AS i0 ON i."Id" = i0.item_pai_id
+    WHERE i.item_pai_id IS NULL
+) AS s ON m."Id" = s.menu_id
+ORDER BY m.nome, m."Id", s."Id"
+2026-08-16 14:21:18.834 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[MenuResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:21:18.836 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.MenusController.ObterTodosMenus (GBAlves.Commerce.Api) in 59.625ms
+2026-08-16 14:21:18.839 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.MenusController.ObterTodosMenus (GBAlves.Commerce.Api)'
+2026-08-16 14:21:18.841 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Menus - 200 null application/json; charset=utf-8 93.3068ms
+2026-08-16 14:21:18.919 -03:00 [INF] Executed DbCommand (14ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT b."Id", b.ativo, b.criado_em, b.imagem_url, b.link, b.ordem_exibicao, b.subtitulo, b.texto_botao, b.titulo
+FROM banners AS b
+WHERE b.ativo
+ORDER BY b.ordem_exibicao
+2026-08-16 14:21:18.923 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[GBAlves.Commerce.Application.DTOs.Banners.BannerResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:21:18.925 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.BannersController.ObterAtivos (GBAlves.Commerce.Api) in 140.8325ms
+2026-08-16 14:21:18.927 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.BannersController.ObterAtivos (GBAlves.Commerce.Api)'
+2026-08-16 14:21:18.928 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Banners/ativos - 200 null application/json; charset=utf-8 165.7653ms
+2026-08-16 14:21:18.945 -03:00 [INF] Executed DbCommand (26ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT p0."Id", p0.altura, p0.ativo, p0.atualizado_em, p0.categoria_id, p0.comprimento, p0.criado_em, p0.descricao, p0.destaque, p0.estoque, p0.imagem_url, p0.largura, p0.nome, p0.peso, p0.preco, p0.preco_original, p0.slug, c."Id", c.ativo, c.atualizado_em, c.criado_em, c.imagem_url, c.nome, c.ordem_exibicao, c.slug
+FROM (
+    SELECT p."Id", p.altura, p.ativo, p.atualizado_em, p.categoria_id, p.comprimento, p.criado_em, p.descricao, p.destaque, p.estoque, p.imagem_url, p.largura, p.nome, p.peso, p.preco, p.preco_original, p.slug
+    FROM produtos AS p
+    WHERE p.ativo AND p.destaque AND p.estoque > 0
+    ORDER BY p.criado_em DESC
+    LIMIT @__p_0
+) AS p0
+LEFT JOIN categorias AS c ON p0.categoria_id = c."Id"
+ORDER BY p0.criado_em DESC
+2026-08-16 14:21:18.948 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[GBAlves.Commerce.Application.DTOs.Produtos.ProdutoResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:21:18.951 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.ProdutosController.ObterDestaques (GBAlves.Commerce.Api) in 161.4678ms
+2026-08-16 14:21:18.953 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.ProdutosController.ObterDestaques (GBAlves.Commerce.Api)'
+2026-08-16 14:21:18.955 -03:00 [INF] Request finished HTTP/1.1 GET http://localhost:5184/api/Produtos/destaques - 200 null application/json; charset=utf-8 181.3368ms
+2026-08-16 14:21:28.241 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Frete/calcular - null null
+2026-08-16 14:21:28.245 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:21:28.246 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Frete/calcular - 204 null null 4.2759ms
+2026-08-16 14:21:28.249 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5184/api/Frete/calcular - application/json 103
+2026-08-16 14:21:28.252 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:21:28.254 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.FreteController.CalcularFrete (GBAlves.Commerce.Api)'
+2026-08-16 14:21:28.256 -03:00 [INF] Route matched with {action = "CalcularFrete", controller = "Frete"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[GBAlves.Commerce.Application.DTOs.Fretes.FreteResponse]]] CalcularFrete(GBAlves.Commerce.Application.DTOs.Fretes.CalcularFreteRequest) on controller GBAlves.Commerce.Api.Controllers.FreteController (GBAlves.Commerce.Api).
+2026-08-16 14:21:28.278 -03:00 [INF] Executed DbCommand (18ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p.altura, p.ativo, p.atualizado_em, p.categoria_id, p.comprimento, p.criado_em, p.descricao, p.destaque, p.estoque, p.imagem_url, p.largura, p.nome, p.peso, p.preco, p.preco_original, p.slug
+FROM produtos AS p
+WHERE p."Id" = @__p_0
+LIMIT 1
+2026-08-16 14:21:28.794 -03:00 [INF] Frete calculado: Correios SEDEX - Valor original: 1193 → Corrigido: 11.93
+2026-08-16 14:21:28.796 -03:00 [INF] Frete calculado: Jadlog .Package - Valor original: 1807 → Corrigido: 18.07
+2026-08-16 14:21:28.798 -03:00 [INF] Frete calculado: Jadlog .Com - Valor original: 1656 → Corrigido: 16.56
+2026-08-16 14:21:28.800 -03:00 [INF] Frete calculado: Azul Cargo Express Expresso - Valor original: 5478 → Corrigido: 54.78
+2026-08-16 14:21:28.803 -03:00 [INF] Frete calculado: Azul Cargo Express e-commerce - Valor original: 4675 → Corrigido: 46.75
+2026-08-16 14:21:28.805 -03:00 [INF] Frete calculado: Jadlog .Package Centralizado - Valor original: 2569 → Corrigido: 25.69
+2026-08-16 14:21:28.807 -03:00 [INF] Frete calculado: Loggi Express - Valor original: 889 → Corrigido: 8.89
+2026-08-16 14:21:28.809 -03:00 [INF] Frete calculado: Loggi Coleta - Valor original: 2441 → Corrigido: 24.41
+2026-08-16 14:21:28.811 -03:00 [INF] Frete calculado: JeT Standard - Valor original: 948 → Corrigido: 9.48
+2026-08-16 14:21:28.813 -03:00 [INF] Frete calculado: Loggi Loggi Ponto - Valor original: 945 → Corrigido: 9.45
+2026-08-16 14:21:28.815 -03:00 [INF] Frete calculado: Total Express Standard - Valor original: 1299 → Corrigido: 12.99
+2026-08-16 14:21:28.817 -03:00 [INF] Frete calculado: CEP 08330430, 11 opções
+2026-08-16 14:21:28.819 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[GBAlves.Commerce.Application.DTOs.Fretes.FreteResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:21:28.822 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.FreteController.CalcularFrete (GBAlves.Commerce.Api) in 563.7324ms
+2026-08-16 14:21:28.824 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.FreteController.CalcularFrete (GBAlves.Commerce.Api)'
+2026-08-16 14:21:28.826 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5184/api/Frete/calcular - 200 null application/json; charset=utf-8 576.5382ms
+2026-08-16 14:21:29.317 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5184/api/Frete/calcular - application/json 103
+2026-08-16 14:21:29.323 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:21:29.325 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.FreteController.CalcularFrete (GBAlves.Commerce.Api)'
+2026-08-16 14:21:29.327 -03:00 [INF] Route matched with {action = "CalcularFrete", controller = "Frete"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[GBAlves.Commerce.Application.DTOs.Fretes.FreteResponse]]] CalcularFrete(GBAlves.Commerce.Application.DTOs.Fretes.CalcularFreteRequest) on controller GBAlves.Commerce.Api.Controllers.FreteController (GBAlves.Commerce.Api).
+2026-08-16 14:21:29.341 -03:00 [INF] Executed DbCommand (10ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p.altura, p.ativo, p.atualizado_em, p.categoria_id, p.comprimento, p.criado_em, p.descricao, p.destaque, p.estoque, p.imagem_url, p.largura, p.nome, p.peso, p.preco, p.preco_original, p.slug
+FROM produtos AS p
+WHERE p."Id" = @__p_0
+LIMIT 1
+2026-08-16 14:21:29.798 -03:00 [INF] Frete calculado: Correios SEDEX - Valor original: 1193 → Corrigido: 11.93
+2026-08-16 14:21:29.801 -03:00 [INF] Frete calculado: Jadlog .Package - Valor original: 1807 → Corrigido: 18.07
+2026-08-16 14:21:29.803 -03:00 [INF] Frete calculado: Jadlog .Com - Valor original: 1656 → Corrigido: 16.56
+2026-08-16 14:21:29.806 -03:00 [INF] Frete calculado: Azul Cargo Express Expresso - Valor original: 5478 → Corrigido: 54.78
+2026-08-16 14:21:29.808 -03:00 [INF] Frete calculado: Azul Cargo Express e-commerce - Valor original: 4675 → Corrigido: 46.75
+2026-08-16 14:21:29.810 -03:00 [INF] Frete calculado: Jadlog .Package Centralizado - Valor original: 2569 → Corrigido: 25.69
+2026-08-16 14:21:29.812 -03:00 [INF] Frete calculado: Loggi Express - Valor original: 889 → Corrigido: 8.89
+2026-08-16 14:21:29.814 -03:00 [INF] Frete calculado: Loggi Coleta - Valor original: 2441 → Corrigido: 24.41
+2026-08-16 14:21:29.817 -03:00 [INF] Frete calculado: JeT Standard - Valor original: 948 → Corrigido: 9.48
+2026-08-16 14:21:29.819 -03:00 [INF] Frete calculado: Loggi Loggi Ponto - Valor original: 945 → Corrigido: 9.45
+2026-08-16 14:21:29.822 -03:00 [INF] Frete calculado: Total Express Standard - Valor original: 1299 → Corrigido: 12.99
+2026-08-16 14:21:29.824 -03:00 [INF] Frete calculado: CEP 08330430, 11 opções
+2026-08-16 14:21:29.826 -03:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[GBAlves.Commerce.Application.DTOs.Fretes.FreteResponse, GBAlves.Commerce.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-08-16 14:21:29.828 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.FreteController.CalcularFrete (GBAlves.Commerce.Api) in 498.0215ms
+2026-08-16 14:21:29.831 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.FreteController.CalcularFrete (GBAlves.Commerce.Api)'
+2026-08-16 14:21:29.833 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5184/api/Frete/calcular - 200 null application/json; charset=utf-8 516.1236ms
+2026-08-16 14:21:35.103 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos - null null
+2026-08-16 14:21:35.106 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:21:35.107 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Pedidos - 204 null null 4.2806ms
+2026-08-16 14:21:35.111 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5184/api/Pedidos - application/json 353
+2026-08-16 14:21:35.114 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:21:35.115 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.Criar (GBAlves.Commerce.Api)'
+2026-08-16 14:21:35.116 -03:00 [INF] Route matched with {action = "Criar", controller = "Pedidos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse]] Criar(GBAlves.Commerce.Application.DTOs.Pedidos.CriarPedidoRequest) on controller GBAlves.Commerce.Api.Controllers.PedidosController (GBAlves.Commerce.Api).
+2026-08-16 14:21:35.160 -03:00 [INF] Executed DbCommand (39ms) [Parameters=[@__usuarioId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u.ativo, u.atualizado_em, u.cliente_id, u.criado_em, u.email, u.nivel_acesso, u.nome, u.senha_hash, c."Id", c.atualizado_em, c.cpf, c.criado_em, c.email, c.nome, c.telefone
+FROM usuarios AS u
+LEFT JOIN clientes AS c ON u.cliente_id = c."Id"
+WHERE u."Id" = @__usuarioId_0
+LIMIT 1
+2026-08-16 14:21:35.200 -03:00 [INF] Executed DbCommand (35ms) [Parameters=[@__p_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p.altura, p.ativo, p.atualizado_em, p.categoria_id, p.comprimento, p.criado_em, p.descricao, p.destaque, p.estoque, p.imagem_url, p.largura, p.nome, p.peso, p.preco, p.preco_original, p.slug
+FROM produtos AS p
+WHERE p."Id" = @__p_0
+LIMIT 1
+2026-08-16 14:21:35.841 -03:00 [INF] Frete calculado: Correios SEDEX - Valor original: 1193 → Corrigido: 11.93
+2026-08-16 14:21:35.844 -03:00 [INF] Frete calculado: Jadlog .Package - Valor original: 1807 → Corrigido: 18.07
+2026-08-16 14:21:35.846 -03:00 [INF] Frete calculado: Jadlog .Com - Valor original: 1656 → Corrigido: 16.56
+2026-08-16 14:21:35.848 -03:00 [INF] Frete calculado: Azul Cargo Express Expresso - Valor original: 5478 → Corrigido: 54.78
+2026-08-16 14:21:35.850 -03:00 [INF] Frete calculado: Azul Cargo Express e-commerce - Valor original: 4675 → Corrigido: 46.75
+2026-08-16 14:21:35.852 -03:00 [INF] Frete calculado: Jadlog .Package Centralizado - Valor original: 2569 → Corrigido: 25.69
+2026-08-16 14:21:35.854 -03:00 [INF] Frete calculado: Loggi Express - Valor original: 889 → Corrigido: 8.89
+2026-08-16 14:21:35.856 -03:00 [INF] Frete calculado: Loggi Coleta - Valor original: 2441 → Corrigido: 24.41
+2026-08-16 14:21:35.859 -03:00 [INF] Frete calculado: JeT Standard - Valor original: 948 → Corrigido: 9.48
+2026-08-16 14:21:35.861 -03:00 [INF] Frete calculado: Loggi Loggi Ponto - Valor original: 945 → Corrigido: 9.45
+2026-08-16 14:21:35.864 -03:00 [INF] Frete calculado: Total Express Standard - Valor original: 1299 → Corrigido: 12.99
+2026-08-16 14:21:35.951 -03:00 [INF] Executed DbCommand (82ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?', @p3='?', @p4='?', @p5='?' (DbType = Guid), @p6='?', @p7='?', @p8='?' (DbType = DateTime), @p9='?' (DbType = DateTime), @p10='?', @p11='?' (DbType = Decimal), @p12='?', @p13='?', @p14='?', @p15='?', @p16='?', @p17='?' (DbType = Decimal), @p18='?' (DbType = Decimal), @p19='?', @p21='?' (DbType = Guid), @p20='?' (DbType = Int32), @p22='?' (DbType = Guid), @p23='?', @p24='?', @p25='?' (DbType = Guid), @p26='?' (DbType = Decimal), @p27='?' (DbType = Guid), @p28='?' (DbType = Int32), @p29='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO pedidos ("Id", atualizado_em, bairro, cep, cidade, cliente_id, codigo_rastreio, complemento, criado_em, data_envio, estado, frete, numero, observacao, rua, servico_frete, status, subtotal, total, transportadora)
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19)
+RETURNING numero_pedido;
+UPDATE produtos SET estoque = @p20
+WHERE "Id" = @p21;
+INSERT INTO itens_pedido ("Id", imagem_produto, nome_produto, pedido_id, preco, produto_id, quantidade, total)
+VALUES (@p22, @p23, @p24, @p25, @p26, @p27, @p28, @p29);
+2026-08-16 14:21:36.097 -03:00 [INF] Executed DbCommand (55ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT c."Id", c.atualizado_em, c.banner_desktop, c.banner_mobile, c.cor_fundo, c.cor_primaria, c.cor_secundaria, c.cor_texto, c.criado_em, c."Email", c."Facebook", c."Favicon", c.google_analytics, c."Instagram", c."Logo", c.nome_loja, c.seo_descricao, c.seo_palavras, c.seo_titulo, c."Telefone", c.whatsapp
+FROM configuracao_loja AS c
+LIMIT 1
+2026-08-16 14:21:39.718 -03:00 [INF] 📧 Email enviado para g.britoalves888@gmail.com - Pedido #12
+2026-08-16 14:21:39.721 -03:00 [INF] Pedido criado: "9eda9222-5f9b-4e18-9eaf-54fd2048d076" - #12
+2026-08-16 14:21:39.722 -03:00 [INF] Executing CreatedAtActionResult, writing value of type 'GBAlves.Commerce.Application.DTOs.Pedidos.PedidoResponse'.
+2026-08-16 14:21:39.725 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.PedidosController.Criar (GBAlves.Commerce.Api) in 4607.1571ms
+2026-08-16 14:21:39.728 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.PedidosController.Criar (GBAlves.Commerce.Api)'
+2026-08-16 14:21:39.730 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5184/api/Pedidos - 201 null application/json; charset=utf-8 4618.6996ms
+2026-08-16 14:22:03.898 -03:00 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5184/api/Checkout - null null
+2026-08-16 14:22:03.901 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:22:03.902 -03:00 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5184/api/Checkout - 204 null null 4.3716ms
+2026-08-16 14:22:03.906 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:5184/api/Checkout - application/json 244
+2026-08-16 14:22:03.910 -03:00 [INF] CORS policy execution successful.
+2026-08-16 14:22:03.912 -03:00 [INF] Executing endpoint 'GBAlves.Commerce.Api.Controllers.CheckoutController.CriarCheckout (GBAlves.Commerce.Api)'
+2026-08-16 14:22:03.913 -03:00 [INF] Route matched with {action = "CriarCheckout", controller = "Checkout"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[GBAlves.Commerce.Application.DTOs.Pagamentos.CriarCheckoutResponse]] CriarCheckout(GBAlves.Commerce.Application.DTOs.Pagamentos.CriarCheckoutRequest) on controller GBAlves.Commerce.Api.Controllers.CheckoutController (GBAlves.Commerce.Api).
+2026-08-16 14:22:03.929 -03:00 [INF] Executed DbCommand (13ms) [Parameters=[@__request_PedidoId_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT p1."Id", p1.atualizado_em, p1.bairro, p1.cep, p1.cidade, p1.cliente_id, p1.codigo_rastreio, p1.complemento, p1.criado_em, p1.data_envio, p1.estado, p1.frete, p1.numero, p1.numero_pedido, p1.observacao, p1.rua, p1.servico_frete, p1.status, p1.subtotal, p1.total, p1.transportadora, i."Id", i.imagem_produto, i.nome_produto, i.pedido_id, i.preco, i.produto_id, i.quantidade, i.total, p0."Id", p0.confirmado_em, p0.criado_em, p0.gateway, p0.gateway_pagamento_id, p0.metodo, p0.pedido_id, p0.status, p0.valor
+FROM (
+    SELECT p."Id", p.atualizado_em, p.bairro, p.cep, p.cidade, p.cliente_id, p.codigo_rastreio, p.complemento, p.criado_em, p.data_envio, p.estado, p.frete, p.numero, p.numero_pedido, p.observacao, p.rua, p.servico_frete, p.status, p.subtotal, p.total, p.transportadora
+    FROM pedidos AS p
+    WHERE p."Id" = @__request_PedidoId_0
+    LIMIT 1
+) AS p1
+LEFT JOIN itens_pedido AS i ON p1."Id" = i.pedido_id
+LEFT JOIN pagamentos AS p0 ON p1."Id" = p0.pedido_id
+ORDER BY p1."Id", i."Id"
+2026-08-16 14:22:03.933 -03:00 [INF] 📤 Enviando pagamento: visa | Valor: ¤21.93
+2026-08-16 14:22:05.685 -03:00 [INF] 📥 Resposta: in_process - pending_contingency
+2026-08-16 14:22:05.700 -03:00 [INF] Executed DbCommand (12ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?' (DbType = DateTime), @p3='?', @p4='?', @p5='?', @p6='?' (DbType = Guid), @p7='?', @p8='?' (DbType = Decimal)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO pagamentos ("Id", confirmado_em, criado_em, gateway, gateway_pagamento_id, metodo, pedido_id, status, valor)
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8);
+2026-08-16 14:22:05.736 -03:00 [INF] Executed DbCommand (33ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?' (DbType = Object), @p3='?', @p4='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO eventos_pagamento ("Id", criado_em, dados, evento, pagamento_id)
+VALUES (@p0, @p1, @p2, @p3, @p4);
+2026-08-16 14:22:05.740 -03:00 [INF] Checkout criado: Pedido "9eda9222-5f9b-4e18-9eaf-54fd2048d076" → Pagamento 2a695b77-13a9-4efe-9d54-b73356b5ec09
+2026-08-16 14:22:05.741 -03:00 [INF] Executing OkObjectResult, writing value of type 'GBAlves.Commerce.Application.DTOs.Pagamentos.CriarCheckoutResponse'.
+2026-08-16 14:22:05.743 -03:00 [INF] Executed action GBAlves.Commerce.Api.Controllers.CheckoutController.CriarCheckout (GBAlves.Commerce.Api) in 1828.3107ms
+2026-08-16 14:22:05.745 -03:00 [INF] Executed endpoint 'GBAlves.Commerce.Api.Controllers.CheckoutController.CriarCheckout (GBAlves.Commerce.Api)'
+2026-08-16 14:22:05.746 -03:00 [INF] Request finished HTTP/1.1 POST http://localhost:5184/api/Checkout - 200 null application/json; charset=utf-8 1840.0132ms
